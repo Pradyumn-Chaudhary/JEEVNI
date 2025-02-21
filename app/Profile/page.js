@@ -10,9 +10,6 @@ const page = () => {
         if (!session) {
             router.push('/login')
         }
-        else {
-            getData()
-        }
     }, [])
   return (
     <div>
