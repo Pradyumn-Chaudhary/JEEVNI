@@ -4,14 +4,15 @@ const { Schema, model, models } = mongoose;
 const UserSchema = new Schema({
   email: { type: String, required: true },
   name: { type: String },
-  phone: { type: String, required: true }, 
+  phone: { type: String }, 
   qualifications: { type: String }, 
   experience: { type: Number }, 
-  appointments: { type: [String] }, 
-  history: { type: [String] }, 
+  appointments: { type: [{ type: Schema.Types.ObjectId, ref: "user" }] }, 
+  history: { type: [{ type: Schema.Types.ObjectId, ref: "user" }] }, 
   razorpayid: { type: String },
   razorpaysecret: { type: String },
+  approved: {type: Boolean, default: false}
 }, { timestamps: true }); 
 
-const doctor = models.doctor || model("doctor", UserSchema);
-export default doctor;
+const Doctor = models.Doctor || model("Doctor", UserSchema);
+export default Doctor;
