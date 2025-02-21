@@ -7,7 +7,8 @@ const UserSchema = new Schema({
   name: { type: String },
   phone: { type: String}, 
   appointments: { type: [{ type: Schema.Types.ObjectId, ref: "doctor" }] }, 
-  history: { type:[{ type: Schema.Types.ObjectId, ref: "doctor" }] }, 
+  history: { type: [{ type: Schema.Types.ObjectId, ref: "doctor" }] }, 
+  isDoctor: {type:Boolean,default: false},
 }, { timestamps: true }); 
 
 const User = models.User || model("User", UserSchema);

@@ -1,19 +1,19 @@
 "use client"
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import React from "react";
+import Link from "next/link";
 
 export default function Home() {
-  const router = useRouter()
-  const [isLogged, setisLogged] = useState(false)
-  useEffect(() => {
-    if (!isLogged) {
-     router.push("/login")
-   }
-  }, [isLogged])
+  
   return (
     <>
-    
+      Homepage
+      <br />
+      <br />
+      <Link href="/login">
+        <button>
+        Login
+      </button>
+      </Link>
     </>
   );
 }
