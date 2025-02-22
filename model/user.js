@@ -12,7 +12,7 @@ const UserSchema = new Schema({
   history: { type: [String] }, 
   razorpayid: { type: String },
   razorpaysecret: { type: String },
-  isDoctor: { type: Boolean, default: false },
+  isDoctor: { type: String, default: "none" },
   approved: {type: Boolean, default: false}
 }, { timestamps: true }); 
 
