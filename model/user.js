@@ -12,8 +12,9 @@ const UserSchema = new Schema({
   history: { type: [String] }, 
   razorpayid: { type: String },
   razorpaysecret: { type: String },
+  category:{type: String},
   isDoctor: { type: String, default: "none" },
-  approved: {type: Boolean, default: false}
+  isApproved: {type: Boolean, default: false}
 }, { timestamps: true }); 
 
 const User = models.User || model("User", UserSchema);
