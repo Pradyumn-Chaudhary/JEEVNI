@@ -9,7 +9,7 @@ export const fetchuser = async (email) => {
     return user;
 };
   
-export const updateProfile = async (data, oldusername) => {
+export const updateProfile = async (data, email) => {
     await connectDB();
     let ndata = Object.fromEntries(data);
     await User.updateOne({ email: ndata.email }, ndata);
