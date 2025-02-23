@@ -98,7 +98,7 @@ export default function Home() {
                           <h3 className="text-[14px] font-bold">
                             {user.name}
                           </h3>
-                          <span className="text-[8px]">{user.bio}</span>
+                          <span className="text-[8px]">{user.category}</span>
                         </div>
                       </div>
                     ))
