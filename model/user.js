@@ -25,6 +25,7 @@ const UserSchema = new Schema(
     rating: { type: Number },
     isDoctor: { type: String, default: "none" },
     isApproved: { type: Boolean, default: false },
+    password:{type:String},
   },
   { timestamps: true }
 );
