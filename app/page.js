@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { fetchDoctor } from "@/actions/useraction";
 import {useRouter} from "next/navigation";
+// import CallPage from "./components/call";
+import VideoCall from "./components/call";
 
 export default function Home() {
   const router = useRouter()
@@ -126,6 +128,8 @@ export default function Home() {
       </div>
       
 
+      
+      <VideoCall/>
     </>
   );
 }
