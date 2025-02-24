@@ -1,6 +1,7 @@
 "use server";
 import connectDB from "@/db/connectDB";
 import User from "@/model/user";
+import { v4 as uuidv4 } from "uuid";
 
 export const fetchuser = async (email) => {
   await connectDB();
@@ -31,4 +32,40 @@ export const fetchDoctor = async (prefix) => {
     .lean();
 
   return users;
+};
+
+const addAppointment = async (doctorEmail, patientEmail, amount) => {
+  const id = uuidv4();
+
+  const doctor = await User.findOne({ email: doctorEmail });
+
+  if (!doctor) {
+    console.log("Doctor not found");
+    return;
+  }
+
+  doctor.appointments.push({
+    appointmentId: id,
+    email: patientEmail,
+    amount: amount,
+  });
+
+  await doctor.save();
+
+  const user = await User.findOne({ email: patientEmail });
+
+  if (!user) {
+    console.log("user not found");
+    return;
+  }
+
+  user.appointments.push({
+    appointmentId: id,
+    email: doctorEmail,
+    amount: amount,
+  });
+
+  await user.save();
+
+  console.log("Appointment added successfully");
 };
