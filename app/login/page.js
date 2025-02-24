@@ -11,7 +11,7 @@ const Page = () => {
 
   useEffect(() => {
     if (status === "authenticated" && !hasRedirected.current) {
-      router.push("/Profile");
+      router.push("/Role");
       hasRedirected.current = true;
     }
   }, [status, router]);
@@ -37,7 +37,8 @@ const Page = () => {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" action="#" method="POST" onSubmit={handleSubmit}>
+
+        {/* <form className="space-y-6" action="#" method="POST" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-900">
               Email address
@@ -85,13 +86,13 @@ const Page = () => {
               Sign in
             </button>
           </div>
-        </form>
+        </form> */}
 
-        <div className="flex items-center my-4">
+        {/* <div className="flex items-center my-4">
           <hr className="flex-grow border-gray-300" />
           <span className="px-3 text-gray-500 text-sm">or</span>
           <hr className="flex-grow border-gray-300" />
-        </div>
+        </div> */}
 
         <div className="flex gap-2 flex-col">
           <button
