@@ -14,9 +14,13 @@ const UserSchema = new Schema(
   {
     email: { type: String, required: true },
     name: { type: String },
+    username: { type: String },
+    location: { type: String },
     phone: { type: String },
-    qualifications: { type: String },
+    gender: { type: String },
+    qualification: { type: String },
     experience: { type: Number },
+    fees: { type: Number },
     appointments: { type: [AppointmentSchema], default: [] }, // Array of appointment objects
     history: { type: [String] },
     razorpayid: { type: String },
@@ -25,7 +29,6 @@ const UserSchema = new Schema(
     rating: { type: Number },
     isDoctor: { type: String, default: "none" },
     isApproved: { type: Boolean, default: false },
-    password:{type:String},
   },
   { timestamps: true }
 );

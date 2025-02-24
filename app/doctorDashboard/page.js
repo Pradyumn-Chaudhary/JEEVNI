@@ -15,7 +15,7 @@ const Page = () => {
       try {
         const u = await fetchuser(session.user.email);
         if (u?.isDoctor === "none") {
-          router.push("/doctor");
+          router.push("/DoctorRegistration");
         }
       } catch (error) {
         console.error("Error fetching user:", error);

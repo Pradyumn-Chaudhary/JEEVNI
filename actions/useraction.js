@@ -3,17 +3,37 @@ import connectDB from "@/db/connectDB";
 import User from "@/model/user";
 import { v4 as uuidv4 } from "uuid";
 
-export const fetchuser = async (email) => {
-  await connectDB();
-  let u = await User.findOne({ email: email });
-  let user = u.toObject({ flattenObjectIds: true });
-  return user;
-};
-
 export const updateProfile = async (data, email) => {
   await connectDB();
-  let ndata = Object.fromEntries(data);
-  await User.updateOne({ email: ndata.email }, ndata);
+  try {
+    const updateData = { ...data }; // Clone data
+    console.log("Data to update:", updateData); // Debug: Check what’s being sent
+    console.log("Email for query:", email); // Debug: Verify email
+
+    const result = await User.updateOne({ email }, { $set: updateData }); // Use $set for explicit updates
+    console.log("Update result:", result); // Debug: Check MongoDB response
+
+    if (result.modifiedCount === 0) {
+      throw new Error("No documents were updated. Either the user wasn’t found or no changes were made.");
+    }
+
+    return { success: true, result }; // Return a meaningful response
+  } catch (error) {
+    console.error("Error in updateProfile:", error);
+    throw error; // Re-throw to be caught in handleSubmit
+  }
+};
+
+export const fetchuser = async (email) => {
+  await connectDB();
+  try {
+    const user = await User.findOne({ email }).lean(); // .lean() for plain JS object
+    console.log("Fetched user:", user); // Debug: Check what’s returned
+    return user || {};
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return {};
+  }
 };
 
 export const fetchDoctor = async (prefix) => {
