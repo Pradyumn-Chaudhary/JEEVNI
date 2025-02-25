@@ -1,6 +1,26 @@
-import React from "react";
+"use client"
+import React, { useEffect } from "react";
+import { useParams ,useRouter} from "next/navigation";
+import { fetchByUsername } from "@/actions/useraction";
 
 const DoctorProfilePage = () => {
+  const params = useParams();
+  const router = useRouter()
+
+  useEffect(() => {
+    const checkDoctor = async () => {
+      const doctor = await fetchByUsername(params.username);
+      console.log(doctor);
+      
+      if (!doctor) {
+        router.replace("/notfound");  // Redirects to 404 page
+      }
+    };
+
+    checkDoctor();
+  }, [params.username]); 
+  
+  
   return (
     <div className="bg-gray-100 flex flex-col min-h-screen">
       <div className="w-[95%] m-auto my-5">

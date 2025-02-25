@@ -107,3 +107,9 @@ const addAppointment = async (doctorEmail, patientEmail, amount) => {
 
   console.log("Appointment added successfully");
 };
+
+export const fetchByUsername = async(username) => {
+  await connectDB();
+  let u = await User.findOne({ username: username }) .lean();
+  return u;
+}
