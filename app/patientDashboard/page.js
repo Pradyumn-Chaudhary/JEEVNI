@@ -1,109 +1,179 @@
 "use client";
+import { fetchuser } from "@/actions/useraction";
 import React, { useEffect, useState } from "react";
-import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { fetchuser, updateProfile } from "@/actions/useraction";
+import { useSession, signOut } from "next-auth/react";
+import Image from "next/image";
 
-const page = () => {
+const PatientDashboard = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [form, setform] = useState({});
+  const [patientData, setPatientData] = useState({});
+  const [activeTab, setActiveTab] = useState("appointments");
 
   useEffect(() => {
-    // console.log(session)
+    const fetchUserData = async () => {
+      if (!session?.user?.email) return;
+      try {
+        const user = await fetchuser(session.user.email);
+        setPatientData(user);
+        if (user?.isDoctor === "none") {
+          router.push("/patientRegistration");
+        } else if (user?.isDoctor === "doctor") {
+          router.push("/DoctorDashboard");
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
 
-    if (!session) {
-      router.push("/login");
-    } else {
-      getData();
+    if (status === "authenticated") {
+      fetchUserData();
     }
-  }, []);
+  }, [session, status, router]);
 
-  const getData = async () => {
-    let u = await fetchuser(session.user.email);
-    setform(u);
-  };
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/");
+    }
+  }, [status, router]);
 
-  const handleChange = (e) => {
-    setform({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    let a = await updateProfile(e, session.user.name);
-  };
   return (
-    <div className="container mx-auto py-5 px-6 ">
-      <h1 className="text-center my-5 text-3xl font-bold">
-        Welcome to your Dashboard
-      </h1>
+    <div className="bg-gray-100">
+      <div className="flex h-screen">
+        {console.log(patientData)}
+        <div className="w-1/4 bg-white p-6 shadow-lg flex flex-col justify-between">
+          <div className="text-center">
+            <Image
+              src="/avatar.png"
+              alt="Profile Picture"
+              className="mx-auto rounded-full"
+              width={100}
+              height={100}
+            />
+            <h2 className="text-2xl font-semibold mt-4">{patientData?.name}</h2>
+            <p className="text-gray-600">{patientData?.email}</p>
+          </div>
 
-      <form className="max-w-2xl mx-auto" action={handleSubmit}>
-        <div className="my-2">
-          <label
-            htmlFor="name"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Name
-          </label>
-          <input
-            value={form.name ? form.name : ""}
-            onChange={handleChange}
-            type="text"
-            name="name"
-            id="name"
-            className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          />
-        </div>
-        {/* input for email */}
-        <div className="my-2">
-          <label
-            htmlFor="email"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Email
-          </label>
-          <input
-            value={form.email ? form.email : ""}
-            onChange={handleChange}
-            readOnly={true}
-            type="email"
-            name="email"
-            id="email"
-            className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          />
-        </div>
-        <div className="my-2">
-          <label
-            htmlFor="phone"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Phone
-          </label>
-          <input
-            value={form.phone ? form.phone : ""}
-            onChange={handleChange}
-            readOnly={true}
-            type="phone"
-            name="phone"
-            id="phone"
-            className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          />
-        </div>
-        
-        <input type="hidden" name="isDoctor" value="user" />
+          <div className="mt-6 space-y-3">
+            <p className="text-gray-800 font-medium">
+              Age: <span className="text-gray-600">{patientData?.age}</span>
+            </p>
+            <p className="text-gray-800 font-medium">
+              Gender:{" "}
+              <span className="text-gray-600">{patientData?.gender}</span>
+            </p>
+            <p className="text-gray-800 font-medium">
+              Phone: <span className="text-gray-600">{patientData?.phone}</span>
+            </p>
+            <p className="text-gray-800 font-medium">
+              Location:{" "}
+              <span className="text-gray-600">{patientData?.location}</span>
+            </p>
+            <p className="text-gray-800 font-medium">
+              Medical History:{" "}
+              <span className="text-gray-600">
+                {patientData?.medicalHistory}
+              </span>
+            </p>
+          </div>
 
-        {/* Submit Button  */}
-        <div className="my-6">
-          <button
-            type="submit"
-            className="block w-full p-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:ring-blue-500 focus:ring-4 focus:outline-none   dark:focus:ring-blue-800 font-medium text-sm"
-          >
-            Save
-          </button>
+          <div className="text-center mt-6">
+            <button
+              onClick={() => signOut()}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+            >
+              Log Out
+            </button>
+          </div>
         </div>
-      </form>
+
+        <div className="w-3/4 p-6">
+          <div className="flex space-x-4 mb-4">
+            <button
+              className={`tab-btn px-4 py-2 rounded ${
+                activeTab === "appointments"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200"
+              }`}
+              onClick={() => setActiveTab("appointments")}
+            >
+              My Appointments
+            </button>
+            <button
+              className={`tab-btn px-4 py-2 rounded ${
+                activeTab === "history"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200"
+              }`}
+              onClick={() => setActiveTab("history")}
+            >
+              History
+            </button>
+          </div>
+
+          {activeTab === "appointments" ? (
+            <div className="p-4 bg-white shadow rounded">
+              <h2 className="text-lg font-semibold mb-2">Appointments</h2>
+              {patientData?.appointments?.length === 0 ? (
+                <p className="text-gray-500">No upcoming appointments</p>
+              ) : (
+                <div className="space-y-4">
+                  {patientData?.appointments?.map((appointment) => (
+                    <div
+                      key={appointment.appointmentId}
+                      className="p-4 border rounded-lg shadow-sm flex justify-between items-center bg-white"
+                    >
+                      <div>
+                        <p className="text-md font-medium">
+                          👨‍⚕️ Doctor: {appointment.doctorName}
+                        </p>
+                        <p className="text-gray-600">
+                          🗓 Date: {appointment.date}
+                        </p>
+                        <p className="text-gray-600">
+                          💰 Fees: ₹{appointment.amount}
+                        </p>
+                      </div>
+                      <div>
+                        <button className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 transition">
+                          📞 Join
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="p-4 bg-white shadow rounded">
+              <h2 className="text-lg font-semibold mb-2">History</h2>
+              {patientData?.history?.length === 0 ? (
+                <p className="text-gray-500">No past appointments</p>
+              ) : (
+                <div className="space-y-4">
+                  {patientData?.history?.map((history) => (
+                    <div
+                      key={history.historyId}
+                      className="p-4 border rounded-lg shadow-sm bg-white"
+                    >
+                      <p className="text-md font-medium">
+                        👨‍⚕️ Doctor: {history.doctorName}
+                      </p>
+                      <p className="text-gray-600">🗓 Date: {history.date}</p>
+                      <p className="text-gray-600">
+                        💊 Diagnosis: {history.diagnosis}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
 
-export default page;
+export default PatientDashboard;

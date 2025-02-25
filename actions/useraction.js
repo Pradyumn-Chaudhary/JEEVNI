@@ -5,9 +5,11 @@ import { v4 as uuidv4 } from "uuid";
 
 export const updateProfile = async (data, email) => {
   await connectDB();
-  const existingUser  = await fetchForUsername(data.username)
-  if (existingUser && existingUser.email !== email) {
-    return ("Username already occupied")
+  if (data?.username) {
+    const existingUser = await fetchForUsername(data.username);
+    if (existingUser && existingUser.email !== email) {
+      return "Username already occupied";
+    }
   }
   try {
     const updateData = { ...data }; // Clone data
@@ -51,14 +53,16 @@ export const fetchuser = async (email) => {
       razorpayid: user?.razorpayid || "",
       razorpaysecret: user?.razorpaysecret || "",
       isDoctor: user?.isDoctor || "",
-      appointments: user?.appointments || [], // ✅ Include appointments
+      history: user?.history || [],
+      isApproved: user?.isApproved || false,
+      rating: user?.rating || "",
+      appointments: user?.appointments || [],
     };
   } catch (error) {
     console.error("Error fetching user:", error);
     return {};
   }
 };
-
 
 export const fetchDoctor = async (prefix) => {
   await connectDB();
@@ -114,15 +118,14 @@ const addAppointment = async (doctorEmail, patientEmail, amount) => {
   console.log("Appointment added successfully");
 };
 
-export const fetchByUsername = async(username) => {
+export const fetchByUsername = async (username) => {
   await connectDB();
-  let u = await User.findOne({ username: username ,isApproved:true}) .lean();
+  let u = await User.findOne({ username: username, isApproved: true }).lean();
   return u;
-}
+};
 
-export const fetchForUsername = async(username) => {
+export const fetchForUsername = async (username) => {
   await connectDB();
-  let u = await User.findOne({ username: username}) .lean();
+  let u = await User.findOne({ username: username }).lean();
   return u;
-}
-
+};

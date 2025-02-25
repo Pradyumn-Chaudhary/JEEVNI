@@ -3,7 +3,7 @@ const { Schema, model, models } = mongoose;
 
 const AppointmentSchema = new Schema(
   {
-    appointmentId: { type: String, required: true, unique: true }, // Manually assigned unique ID
+    appointmentId: { type: String, required: true }, // Manually assigned unique ID
     email: { type: String, required: true }, // User's email
     amount: { type: Number, required: true }, // Payment amount
     patientName: { type: String, require: true },
