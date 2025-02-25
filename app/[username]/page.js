@@ -1,17 +1,17 @@
 "use client"
-import React, { useEffect } from "react";
+import React, { useEffect ,useState} from "react";
 import { useParams ,useRouter} from "next/navigation";
 import { fetchByUsername } from "@/actions/useraction";
 
 const DoctorProfilePage = () => {
   const params = useParams();
   const router = useRouter()
+  const [doctorData, setDoctorData] = useState({})
 
   useEffect(() => {
     const checkDoctor = async () => {
       const doctor = await fetchByUsername(params.username);
-      console.log(doctor);
-      
+      setDoctorData(doctor)
       if (!doctor) {
         router.replace("/notfound");  // Redirects to 404 page
       }
@@ -32,10 +32,17 @@ const DoctorProfilePage = () => {
             className="w-24 h-24 rounded-full"
           />
           <div>
-            <h2 className="text-2xl font-semibold">Dr. John Smith</h2>
-            <p className="text-gray-600">Cardiologist</p>
-            <p className="text-gray-500">10+ Years Experience</p>
+            <h2 className="text-2xl font-semibold">{ doctorData?.name}</h2>
+            <p className="text-gray-600">{doctorData?.category}</p>
+            <p className="text-gray-500">{ doctorData?.experience}+ Years Experience</p>
           </div>
+        </div>
+
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold">Fees</h3>
+          <p className="text-gray-600 mt-2">
+          ₹{ doctorData?.fees}
+          </p>
         </div>
 
         <div className="mt-6">

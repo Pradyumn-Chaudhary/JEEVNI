@@ -31,7 +31,7 @@ export default function Home() {
     <>
       Homepage
       <br />
-      <Link href="/Profile">
+      <Link href="/Role">
       <button>
         Profile
         </button>
@@ -91,7 +91,7 @@ export default function Home() {
                       >
                         <div className="w-9 h-9">
                           <img
-                            src={user.profilepic}
+                            src="/avatar.png"
                             alt="dp"
                             className="rounded-full object-cover w-full h-full"
                           />
