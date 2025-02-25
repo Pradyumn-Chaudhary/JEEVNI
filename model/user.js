@@ -6,6 +6,9 @@ const AppointmentSchema = new Schema(
     appointmentId: { type: String, required: true, unique: true }, // Manually assigned unique ID
     email: { type: String, required: true }, // User's email
     amount: { type: Number, required: true }, // Payment amount
+    patientName: { type: String, require: true },
+    doctorName: { type: String, require: true },
+    problem: { type: String },
   },
   { timestamps: true } // MongoDB will automatically generate `_id`
 );

@@ -34,7 +34,7 @@ export const fetchuser = async (email) => {
   await connectDB();
   try {
     const user = await User.findOne({ email }).lean(); // .lean() for plain JS object
-    console.log("Fetched user:", user); // Debug
+    console.log("Fetched user:", user); // Debugging
 
     // Ensure all fields exist before returning
     return {
@@ -43,20 +43,22 @@ export const fetchuser = async (email) => {
       email: user?.email || "",
       phone: user?.phone || "",
       location: user?.location || "",
-      gender: user?.gender || "", // Ensure gender is included
-      qualification: user?.qualification || "", // Ensure qualification is included
+      gender: user?.gender || "",
+      qualification: user?.qualification || "",
       experience: user?.experience || "",
       category: user?.category || "",
       fees: user?.fees || "",
       razorpayid: user?.razorpayid || "",
       razorpaysecret: user?.razorpaysecret || "",
       isDoctor: user?.isDoctor || "",
+      appointments: user?.appointments || [], // ✅ Include appointments
     };
   } catch (error) {
     console.error("Error fetching user:", error);
     return {};
   }
 };
+
 
 export const fetchDoctor = async (prefix) => {
   await connectDB();
