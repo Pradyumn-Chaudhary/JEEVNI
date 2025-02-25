@@ -65,6 +65,11 @@ const Page = () => {
     try {
       const updatedForm = { ...form, isDoctor: "doctor" };
       const result = await updateProfile(updatedForm, session.user.email);
+      if (!result.success) {
+        alert(result);
+        // Fix incorrect alert usage
+        return;
+      }
       console.log("Update result:", result);
       alert("Profile updated successfully!");
 

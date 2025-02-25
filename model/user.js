@@ -27,7 +27,7 @@ const UserSchema = new Schema(
     razorpaysecret: { type: String },
     category: { type: String },
     rating: { type: Number, default: 0 },
-    isDoctor: { type: String, default: "" },
+    isDoctor: { type: String, default: "none" },
     isApproved: { type: Boolean, default: false },
   },
   { timestamps: true }

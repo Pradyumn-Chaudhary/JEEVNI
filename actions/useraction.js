@@ -5,6 +5,10 @@ import { v4 as uuidv4 } from "uuid";
 
 export const updateProfile = async (data, email) => {
   await connectDB();
+  const existingUser  = await fetchForUsername(data.username)
+  if (existingUser && existingUser.email !== email) {
+    return ("Username already occupied")
+  }
   try {
     const updateData = { ...data }; // Clone data
     console.log("Data to update:", updateData); // Debug: Check what’s being sent
@@ -110,6 +114,13 @@ const addAppointment = async (doctorEmail, patientEmail, amount) => {
 
 export const fetchByUsername = async(username) => {
   await connectDB();
-  let u = await User.findOne({ username: username }) .lean();
+  let u = await User.findOne({ username: username ,isApproved:true}) .lean();
   return u;
 }
+
+export const fetchForUsername = async(username) => {
+  await connectDB();
+  let u = await User.findOne({ username: username}) .lean();
+  return u;
+}
+
