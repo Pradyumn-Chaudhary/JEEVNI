@@ -22,12 +22,12 @@ const UserSchema = new Schema(
     experience: { type: Number },
     fees: { type: Number },
     appointments: { type: [AppointmentSchema], default: [] }, // Array of appointment objects
-    history: { type: [String] },
+    history: { type: [String], default: [] },
     razorpayid: { type: String },
     razorpaysecret: { type: String },
     category: { type: String },
-    rating: { type: Number },
-    isDoctor: { type: String, default: "none" },
+    rating: { type: Number, default: 0 },
+    isDoctor: { type: String, default: "" },
     isApproved: { type: Boolean, default: false },
   },
   { timestamps: true }

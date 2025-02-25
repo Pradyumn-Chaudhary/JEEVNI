@@ -24,11 +24,11 @@ export const authOptions = {
 
         const updatedUser = await User.findOneAndUpdate(
           { email: user.email },
-          { email: user.email, username: user.name},
+          { email: user.email, name: user.name},
           { upsert: true, new: true } // Create if not found, return new doc
         );
 
-        user.name = updatedUser.username;
+        user.name = updatedUser.name;
         return true;
       }
 

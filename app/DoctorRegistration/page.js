@@ -20,7 +20,14 @@ const Page = () => {
     fees: "",
     razorpayid: "",
     razorpaysecret: "",
+    isDoctor: "",
   });
+
+  useEffect(() => {
+    if (form.isDoctor === "doctor") {
+      router.push("/doctorDashboard"); // ✅ Prevent access to registration
+    }
+  }, [form.isDoctor, router]);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -37,7 +44,8 @@ const Page = () => {
       console.log("Fetched user data:", userData); // Debug log
       setForm((prevForm) => ({
         ...prevForm,
-        ...userData, // Merge fetched data with defaults
+        ...userData,
+        isDoctor: userData.isDoctor || "none",// ✅ Ensure "doctor" is always set
       }));
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -55,9 +63,13 @@ const Page = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const result = await updateProfile(form, session.user.email);
+      const updatedForm = { ...form, isDoctor: "doctor" };
+      const result = await updateProfile(updatedForm, session.user.email);
       console.log("Update result:", result);
       alert("Profile updated successfully!");
+
+      // ✅ Redirect to doctorDashboard after successful update
+      router.push("/doctorDashboard");
     } catch (error) {
       console.error("Error updating profile:", error);
       alert("Failed to update profile.");
@@ -77,7 +89,9 @@ const Page = () => {
 
         <form className="max-w-2xl mx-auto" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-gray-700 font-semibold">Full Name</label>
+            <label className="block text-gray-700 font-semibold">
+              Full Name
+            </label>
             <input
               value={form.name || ""}
               onChange={handleChange}
@@ -90,7 +104,9 @@ const Page = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold">Username</label>
+            <label className="block text-gray-700 font-semibold">
+              Username
+            </label>
             <input
               value={form.username || ""}
               onChange={handleChange}
@@ -111,6 +127,7 @@ const Page = () => {
               type="email"
               name="email"
               required
+              disabled
               className="w-full mt-1 p-2 border rounded-lg outline-indigo-500"
             />
           </div>
@@ -129,7 +146,9 @@ const Page = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold">Location</label>
+            <label className="block text-gray-700 font-semibold">
+              Location
+            </label>
             <input
               value={form.location || ""}
               onChange={handleChange}
@@ -140,7 +159,6 @@ const Page = () => {
               className="w-full mt-1 p-2 border rounded-lg outline-indigo-500"
             />
           </div>
-
           <div>
             <label className="block text-gray-700 font-semibold">Gender</label>
             <div className="flex gap-4 mt-1">
@@ -181,7 +199,9 @@ const Page = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold">Qualification</label>
+            <label className="block text-gray-700 font-semibold">
+              Qualification
+            </label>
             <select
               name="qualification"
               required
@@ -201,7 +221,9 @@ const Page = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold">Experience (Years)</label>
+            <label className="block text-gray-700 font-semibold">
+              Experience (Years)
+            </label>
             <input
               value={form.experience || ""}
               onChange={handleChange}
@@ -215,7 +237,9 @@ const Page = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold">Specialization</label>
+            <label className="block text-gray-700 font-semibold">
+              Specialization
+            </label>
             <select
               name="category"
               required
@@ -235,7 +259,9 @@ const Page = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold">Consultation Fees (₹)</label>
+            <label className="block text-gray-700 font-semibold">
+              Consultation Fees (₹)
+            </label>
             <input
               value={form.fees || ""}
               onChange={handleChange}
@@ -249,7 +275,9 @@ const Page = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold">Razorpay ID</label>
+            <label className="block text-gray-700 font-semibold">
+              Razorpay ID
+            </label>
             <input
               value={form.razorpayid || ""}
               onChange={handleChange}
@@ -262,7 +290,9 @@ const Page = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold">Razorpay Secret</label>
+            <label className="block text-gray-700 font-semibold">
+              Razorpay Secret
+            </label>
             <input
               value={form.razorpaysecret || ""}
               onChange={handleChange}

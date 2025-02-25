@@ -14,7 +14,9 @@ export const updateProfile = async (data, email) => {
     console.log("Update result:", result); // Debug: Check MongoDB response
 
     if (result.modifiedCount === 0) {
-      throw new Error("No documents were updated. Either the user wasn’t found or no changes were made.");
+      throw new Error(
+        "No documents were updated. Either the user wasn’t found or no changes were made."
+      );
     }
 
     return { success: true, result }; // Return a meaningful response
@@ -28,8 +30,24 @@ export const fetchuser = async (email) => {
   await connectDB();
   try {
     const user = await User.findOne({ email }).lean(); // .lean() for plain JS object
-    console.log("Fetched user:", user); // Debug: Check what’s returned
-    return user || {};
+    console.log("Fetched user:", user); // Debug
+
+    // Ensure all fields exist before returning
+    return {
+      name: user?.name || "",
+      username: user?.username || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
+      location: user?.location || "",
+      gender: user?.gender || "", // Ensure gender is included
+      qualification: user?.qualification || "", // Ensure qualification is included
+      experience: user?.experience || "",
+      category: user?.category || "",
+      fees: user?.fees || "",
+      razorpayid: user?.razorpayid || "",
+      razorpaysecret: user?.razorpaysecret || "",
+      isDoctor: user?.isDoctor || "",
+    };
   } catch (error) {
     console.error("Error fetching user:", error);
     return {};
