@@ -1,26 +1,110 @@
-"use client"
-import React, { useEffect ,useState} from "react";
-import { useParams ,useRouter} from "next/navigation";
+"use client";
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { fetchByUsername } from "@/actions/useraction";
+import { useSession } from "next-auth/react";
+import { initiate } from "@/actions/useraction";
 
 const DoctorProfilePage = () => {
+  const { data: session, status } = useSession();
   const params = useParams();
-  const router = useRouter()
-  const [doctorData, setDoctorData] = useState({})
+  const router = useRouter();
+  const [doctorData, setDoctorData] = useState({});
+  const [paymentDiv, setPaymentDiv] = useState(false);
+  const [paymentform, setpaymentform] = useState({});
+  const [patientEmail, setpatientEmail] = useState()
+
+  useEffect(() => {
+    setpatientEmail(session?.user?.email)
+    setpaymentform({
+      doctorEmail: doctorData?.email,
+      doctorName: doctorData?.name,
+      patientEmail: patientEmail,
+      patientName: "",
+      problem: "",
+      fees: doctorData?.fees,
+    });
+  }, [session,doctorData])
+  
+  const pay = async (paymentform) => {
+    const { fees, doctorEmail, doctorName, patientEmail, patientName, problem } =
+      paymentform;
+    console.log("Payment form data:", {
+      fees,
+      doctorEmail,
+      doctorName,
+      patientEmail,
+      patientName,
+      problem,
+    });
+  
+    let a = await initiate(
+      doctorEmail,
+      doctorName,
+      patientEmail,
+      patientName,
+      problem,
+      fees
+    );
+    console.log("Initiate response:", a);
+  
+    if (!a?.success) {
+      alert(a?.error || "Failed to initiate payment due to an unknown error");
+      return;
+    }
+  
+    const orderId = a.order.id;
+    console.log("Order ID:", orderId);
+  
+    // Ensure Razorpay is loaded on the client side
+    if (!window.Razorpay) {
+      alert("Razorpay SDK not loaded. Please check your script inclusion.");
+      return;
+    }
+  
+    const options = {
+      key: "YOUR_RAZORPAY_KEY_ID", // Replace with actual key or fetch dynamically
+      amount: fees * 100,
+      currency: "INR",
+      name: "Jeevni",
+      description: "Test Transaction",
+      image: "https://example.com/your_logo",
+      order_id: orderId,
+      callback_url: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/razorpay`,
+      prefill: {
+        name: patientName,
+        email: patientEmail,
+        contact: "9876543210",
+      },
+      notes: {
+        address: "Razorpay Corporate Office",
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+  
+    const rzp1 = new window.Razorpay(options);
+    rzp1.open();
+  };
+  
+
+  const handlechange = (e) => {
+    setpaymentform({ ...paymentform, [e.target.name]: e.target.value });
+  };
 
   useEffect(() => {
     const checkDoctor = async () => {
       const doctor = await fetchByUsername(params.username);
-      setDoctorData(doctor)
       if (!doctor) {
-        router.replace("/notfound");  // Redirects to 404 page
+        router.replace("/notfound"); // Redirects to 404 page
       }
+      setDoctorData(doctor);
     };
 
     checkDoctor();
-  }, [params.username]); 
-  
-  
+  }, [params.username]);
+
   return (
     <div className="bg-gray-100 flex flex-col min-h-screen">
       <div className="w-[95%] m-auto my-5">
@@ -32,17 +116,17 @@ const DoctorProfilePage = () => {
             className="w-24 h-24 rounded-full"
           />
           <div>
-            <h2 className="text-2xl font-semibold">{ doctorData?.name}</h2>
+            <h2 className="text-2xl font-semibold">{doctorData?.name}</h2>
             <p className="text-gray-600">{doctorData?.category}</p>
-            <p className="text-gray-500">{ doctorData?.experience}+ Years Experience</p>
+            <p className="text-gray-500">
+              {doctorData?.experience}+ Years Experience
+            </p>
           </div>
         </div>
 
         <div className="mt-6">
           <h3 className="text-lg font-semibold">Fees</h3>
-          <p className="text-gray-600 mt-2">
-          ₹{ doctorData?.fees}
-          </p>
+          <p className="text-gray-600 mt-2">₹{doctorData?.fees}</p>
         </div>
 
         <div className="mt-6">
@@ -70,10 +154,64 @@ const DoctorProfilePage = () => {
 
       {/* Fixed Footer with Appointment Button */}
       <div className="fixed bottom-0 left-0 w-full bg-white shadow-md p-4 flex justify-center">
-        <button className="bg-blue-500 text-white px-6 py-3 rounded-lg text-lg shadow-md hover:bg-blue-600 transition">
+        <button
+          onClick={() => setPaymentDiv(true)}
+          className="bg-blue-500 text-white px-6 py-3 rounded-lg text-lg shadow-md hover:bg-blue-600 transition"
+        >
           Book Appointment
         </button>
       </div>
+      {/* {console.log(session)} */}
+      {/* {console.log(paymentform)}/ */}
+      {/* Payment Div */}
+      {paymentDiv && (
+        <div className="w-[70%] h-[75%] absolute bottom-0 right-0 bg-gradient-to-br from-indigo-500 to-purple-600 p-10 rounded-xl text-white">
+          <div className="flex gap-4 flex-col">
+            <input
+              name="patientName"
+              onChange={handlechange}
+              value={paymentform.patientName}
+              type="text"
+              placeholder="Enter name"
+              className="bg-gray-800 text-white rounded-xl w-full p-4 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
+              maxLength={24}
+            />
+            <input
+              name="problem"
+              onChange={handlechange}
+              value={paymentform.problem}
+              type="text"
+              placeholder="Enter problem"
+              className="bg-gray-800 text-white rounded-xl w-full p-4 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
+              maxLength={100}
+            />
+            <span className="text-xs text-gray-300">
+              *All fields are required
+            </span>
+
+            {/* Pay Button */}
+            <button
+              type="button"
+              onClick={() => pay(paymentform)}
+              className="text-white bg-gradient-to-r from-green-400 to-teal-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full disabled:opacity-50"
+              disabled={
+                paymentform.patientName.length === 0 ||
+                paymentform.problem.length === 0
+              }
+            >
+              Pay ₹{doctorData?.fees}
+            </button>
+
+            {/* Cancel Button */}
+            <button
+              onClick={() => setPaymentDiv(false)}
+              className="bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-lg"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -4,11 +4,12 @@ const { Schema, model, models } = mongoose;
 const AppointmentSchema = new Schema(
   {
     appointmentId: { type: String, required: true }, // Manually assigned unique ID
-    email: { type: String, required: true }, // User's email
-    amount: { type: Number, required: true }, // Payment amount
+    doctorEmail: { type: String }, // User's email
+    fees: { type: Number, required: true }, // Payment amount
     patientName: { type: String, require: true },
     doctorName: { type: String, require: true },
     problem: { type: String },
+    paymentDone:{type:Boolean,default:false},
   },
   { timestamps: true } // MongoDB will automatically generate `_id`
 );

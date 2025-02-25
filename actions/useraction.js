@@ -2,6 +2,78 @@
 import connectDB from "@/db/connectDB";
 import User from "@/model/user";
 import { v4 as uuidv4 } from "uuid";
+import Razorpay from "razorpay";
+
+export const initiate = async (
+  doctorEmail,
+  doctorName,
+  patientEmail,
+  patientName,
+  problem,
+  fees
+) => {
+  try {
+    console.log("Initiating payment with:", {
+      doctorEmail,
+      doctorName,
+      patientEmail,
+      patientName,
+      problem,
+      fees,
+    });
+
+    // Fetch doctor details
+    let user = await User.findOne({ email: doctorEmail });
+    if (!user) {
+      throw new Error("Doctor not found");
+    }
+
+    let secret = user.razorpaysecret;
+    let id = user.razorpayid;
+    console.log("Doctor Razorpay credentials:", { id, secret });
+
+    if (!id || !secret) {
+      throw new Error("Razorpay credentials are missing for this doctor");
+    }
+
+    // Connect to the database
+    await connectDB();
+
+    // Create a new Razorpay instance
+    const razorpay = new Razorpay({
+      key_id: id,
+      key_secret: secret,
+    });
+
+    // Create a new order in Razorpay
+    const options = {
+      amount: fees * 100, // Convert to paisa
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+      payment_capture: 1,
+    };
+
+    const order = await razorpay.orders.create(options);
+    console.log("Razorpay order created:", order);
+
+    // Save the payment request to the database
+    await addAppointment(
+      doctorEmail,
+      doctorName,
+      patientEmail,
+      patientName,
+      problem,
+      fees
+    );
+
+    return { success: true, order };
+  } catch (error) {
+    console.error("Error initiating payment:", error);
+    return { success: false, error: error.message || "Unknown error in initiate" };
+  }
+};
+
+
 
 export const updateProfile = async (data, email) => {
   await connectDB();
@@ -80,43 +152,60 @@ export const fetchDoctor = async (prefix) => {
     .lean();
 
   return users;
+}; 
+
+export const addAppointment = async (
+  doctorEmail,
+  doctorName,
+  patientEmail,
+  patientName,
+  problem,
+  fees
+) => {
+  try {
+    const id = uuidv4();
+    console.log("Generated appointment ID:", id);
+
+    // Find doctor and add appointment details
+    const doctor = await User.findOne({ email: doctorEmail });
+    if (!doctor) {
+      throw new Error("Doctor not found");
+    }
+
+    doctor.appointments.push({
+      appointmentId: id,
+      patientName: patientName,
+      problem: problem,
+      paymentDone: false,
+    });
+
+    await doctor.save();
+    console.log("Appointment added to doctor:", doctorEmail);
+
+    // Find patient and add appointment details
+    const patient = await User.findOne({ email: patientEmail });
+    if (!patient) {
+      throw new Error("Patient not found");
+    }
+
+    patient.appointments.push({
+      appointmentId: id,
+      doctorName: doctorName,
+      doctorEmail: doctorEmail,
+      fees: fees,
+      paymentDone: false,
+    });
+
+    await patient.save();
+    console.log("Appointment added to patient:", patientEmail);
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error adding appointment:", error);
+    throw new Error(error.message || "Failed to add appointment");
+  }
 };
 
-const addAppointment = async (doctorEmail, patientEmail, amount) => {
-  const id = uuidv4();
-
-  const doctor = await User.findOne({ email: doctorEmail });
-
-  if (!doctor) {
-    console.log("Doctor not found");
-    return;
-  }
-
-  doctor.appointments.push({
-    appointmentId: id,
-    email: patientEmail,
-    amount: amount,
-  });
-
-  await doctor.save();
-
-  const user = await User.findOne({ email: patientEmail });
-
-  if (!user) {
-    console.log("user not found");
-    return;
-  }
-
-  user.appointments.push({
-    appointmentId: id,
-    email: doctorEmail,
-    amount: amount,
-  });
-
-  await user.save();
-
-  console.log("Appointment added successfully");
-};
 
 export const fetchByUsername = async (username) => {
   await connectDB();
