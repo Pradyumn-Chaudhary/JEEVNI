@@ -13,9 +13,9 @@ export default function Home() {
   const [prefix, setprefix] = useState("");
   const [search, setsearch] = useState([]);
 
-  const handleSearch = (name) => {
+  const handleSearch = (username) => {
     setprefix("")
-    router.push(`/doctorDashboard`)
+    router.push(`/${username}`)
   }
 
   useEffect(() => {
@@ -87,7 +87,7 @@ export default function Home() {
                       <div
                         key={user.name}
                         className="p-2 hover:bg-gray-100 text-black cursor-pointer flex gap-2"
-                        onClick={() => handleSearch(user.name)}
+                        onClick={() => handleSearch(user.username)}
                       >
                         <div className="w-9 h-9">
                           <img

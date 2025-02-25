@@ -64,7 +64,7 @@ export const fetchDoctor = async (prefix) => {
       { category: { $regex: `^${prefix}`, $options: "i" } },
     ],
   })
-    .select("name category qualifications experience rating")
+    .select("name username fees category qualifications experience rating")
     .sort({ rating: -1 })
     .limit(7)
     .lean();
