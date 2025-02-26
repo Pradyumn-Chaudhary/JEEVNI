@@ -1,7 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { addAppointment, fetchByUsername } from "@/actions/useraction";
+import Script from "next/script";
+import Razorpay from "razorpay";
+import {
+  addAppointment,
+  initiate,
+  fetchByUsername,
+} from "@/actions/useraction";
 import { useSession } from "next-auth/react";
 
 const DoctorProfilePage = () => {
@@ -29,9 +35,51 @@ const DoctorProfilePage = () => {
     setpaymentform({ ...paymentform, [e.target.name]: e.target.value });
   };
 
-  const handleAppointment = async() => {
-    // console.log("working well");
+  const pay = async () => {
+    let a = await initiate(
+      paymentform.doctorEmail,
+      paymentform.doctorName,
+      paymentform.patientEmail,
+      paymentform.patientName,
+      paymentform.problem,
+      paymentform.fees
+    );
+
+    if (!a.order) {
+      toast.error(a.error);
+    }
+    let orderId = a.order.id;
+    console.log(a);
     
+    console.log("Razorpay Key ID:", doctorData.razorpayid);
+    var options = {
+      key: doctorData.razorpayid, //Key ID generated from the Dashboard
+      amount: paymentform.fees * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      currency: "INR",
+      name: "Jeevni",
+      description: "Appointment",
+      image: "https://example.com/your_logo",
+      order_id: orderId, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+      callback_url: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/razorpay`,
+      prefill: {
+        name: "Jeevni",
+        email: "noreply@jeevni.com",
+        contact: "9876543210",
+      },
+      notes: {
+        address: "Razorpay Corporate Office",
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+    console.log("kuch toh dikkat h");
+    const rzp1 = new Razorpay(options);
+    console.log("kya dikkat h yr");
+    rzp1.open();    
+  };
+
+  const handleAppointment = async () => {
     await addAppointment(
       paymentform.doctorEmail,
       paymentform.doctorName,
@@ -39,9 +87,9 @@ const DoctorProfilePage = () => {
       paymentform.patientName,
       paymentform.problem,
       paymentform.fees
-    )
-    router.push("/patientDashboard?appointmentDone=true")
-  }
+    );
+    router.push("/patientDashboard?appointmentDone=true");
+  };
 
   useEffect(() => {
     const checkDoctor = async () => {
@@ -56,12 +104,15 @@ const DoctorProfilePage = () => {
   }, [params.username]);
 
   return (
-    <div className="bg-gray-100 flex flex-col min-h-screen">
+    <>
+       <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
+     <div className="bg-gray-100 flex flex-col min-h-screen">
+      {console.log(doctorData)}
       <div className="w-[95%] m-auto my-5">
         {/* Main Content Area */}
         <div className="flex items-center space-x-6">
           <img
-            src={session?.user?.image || "/avatar.png"}
+            src="/avatar.png"
             alt="Dr. John Smith's Profile Picture"
             className="w-24 h-24 rounded-full"
           />
@@ -163,6 +214,7 @@ const DoctorProfilePage = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

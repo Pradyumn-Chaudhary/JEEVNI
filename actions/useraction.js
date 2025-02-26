@@ -4,6 +4,59 @@ import User from "@/model/user";
 import { v4 as uuidv4 } from "uuid";
 import Razorpay from "razorpay";
 
+export const initiate = async (doctorEmail,
+  doctorName,
+  patientEmail,
+  patientName,
+  problem,
+  fees) => {
+  try {
+  let user = await User.findOne({ email: doctorEmail});
+  let secret = user.razorpaysecret;
+  let id = user.razorpayid;
+  
+  if (!id || !secret) {
+  throw new Error("Razorpay credentials are missing.");
+  }
+  
+  // ✅ Connect to the database
+  await connectDB();
+  
+  // ✅ Create a new Razorpay instance
+  const razorpay = new Razorpay({
+  key_id: id,
+  key_secret: secret,
+  });
+  
+  // ✅ Create a new order in Razorpay
+  const options = {
+  amount: fees * 100, // Convert to paisa
+  currency: "INR",
+  receipt: `receipt_${Date.now()}`,
+  payment_capture: 1,
+  };
+  
+  const order = await razorpay.orders.create(options);
+  
+  // ✅ Save the payment request to the database
+  await addAppointment(
+  order.id,
+  doctorEmail,
+  doctorName,
+  patientEmail,
+  patientName,
+  problem,
+  fees
+  )
+  
+  
+  return { success: true, order };
+  } catch (error) {
+  console.error("Error initiating payment:", error);
+  return { success: false, error: error.message };
+  }
+  };
+
 export const updateProfile = async (data, email) => {
   await connectDB();
   if (data?.username) {
@@ -81,9 +134,10 @@ export const fetchDoctor = async (prefix) => {
     .lean();
 
   return users;
-}; 
+};
 
 export const addAppointment = async (
+  id,
   doctorEmail,
   doctorName,
   patientEmail,
@@ -91,15 +145,17 @@ export const addAppointment = async (
   problem,
   fees
 ) => {
-  console.log(doctorEmail,
+  console.log(
+    doctorEmail,
     doctorName,
     patientEmail,
     patientName,
     problem,
-    fees);
-  
+    fees
+  );
+
   try {
-    const id = uuidv4();
+    // const id = uuidv4();
     console.log("Generated appointment ID:", id);
 
     // Find doctor and add appointment details
@@ -141,7 +197,6 @@ export const addAppointment = async (
     throw new Error(error.message || "Failed to add appointment");
   }
 };
-
 
 export const fetchByUsername = async (username) => {
   await connectDB();

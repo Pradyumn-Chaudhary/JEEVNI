@@ -1,37 +1,34 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/db"; // Adjust path as needed
-import User from "@/models/User"; // Adjust path as needed
 import { validatePaymentVerification } from "razorpay/dist/utils/razorpay-utils";
+import connectDB from "@/db/connectDB";
+import User from "@/model/user";
 
 export const POST = async (req) => {
+  console.log("maja toh aa rha h");
+  
   try {
     await connectDB();
 
     let body = await req.formData();
     body = Object.fromEntries(body);
-    console.log("Payment callback body:", body);
 
-    // Fetch the user (doctor) based on the order ID in their appointments
-    let doctor = await User.findOne({
-      "appointments.appointmentId": body.razorpay_order_id,
+    // Check if user exists with the given appointmentId and isDoctor = "doctor"
+    let isValid = await User.findOne({
+      isDoctor: "doctor",
+      appointments: { $elemMatch: { appointmentId: body.razorpay_order_id } }
     });
-    console.log("Doctor found:", doctor);
 
-    if (!doctor) {
+    if (!isValid) {
       return NextResponse.json({
         success: false,
-        message: "Order ID not found in doctor appointments",
+        message: "Order Id not found or user is not a doctor",
       });
     }
 
-    // Fetch the secret from the database
-    const secret = doctor.razorpaysecret;
-    if (!secret) {
-      throw new Error("Razorpay secret not found for this doctor");
-    }
+    // Fetch the secret from the valid doctor user
+    const secret = isValid.razorpaysecret;
 
-    // Verify the payment signature
-    let isVerified = validatePaymentVerification(
+    let x = validatePaymentVerification(
       {
         order_id: body.razorpay_order_id,
         payment_id: body.razorpay_payment_id,
@@ -39,24 +36,21 @@ export const POST = async (req) => {
       body.razorpay_signature,
       secret
     );
-    console.log("Payment verification result:", isVerified);
 
-    if (isVerified) {
-      // Update payment status in the doctor's appointments
+    if (x) {
+      // Update `paymentDone` field inside the `appointments` array
       await User.updateOne(
-        { "appointments.appointmentId": body.razorpay_order_id },
-        { $set: { "appointments.$.paymentDone": true } }
+        { "appointments.appointmentId": body.razorpay_order_id, isDoctor: "doctor" },
+        { $set: { "appointments.$.paymentDone": "true" } }
       );
 
-      // Update payment status in the patient's appointments
       await User.updateOne(
-        { "appointments.appointmentId": body.razorpay_order_id },
-        { $set: { "appointments.$.paymentDone": true } }
+        { "appointments.appointmentId": body.razorpay_order_id, isDoctor: "patient" },
+        { $set: { "appointments.$.paymentDone": "true" } }
       );
 
-      console.log("Payment status updated successfully");
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/patientDashboard?paymentdone=true`
+        `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/patientDashboard?paymentDone=true`
       );
     } else {
       return NextResponse.json({
