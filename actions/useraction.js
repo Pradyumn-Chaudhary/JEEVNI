@@ -137,7 +137,7 @@ export const fetchDoctor = async (prefix) => {
 };
 
 export const addAppointment = async (
-  id,
+  // id,
   doctorEmail,
   doctorName,
   patientEmail,
@@ -155,7 +155,7 @@ export const addAppointment = async (
   );
 
   try {
-    // const id = uuidv4();
+    const id = uuidv4();
     console.log("Generated appointment ID:", id);
 
     // Find doctor and add appointment details
