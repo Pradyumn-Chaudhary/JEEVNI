@@ -1,9 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { fetchByUsername } from "@/actions/useraction";
+import { addAppointment, fetchByUsername } from "@/actions/useraction";
 import { useSession } from "next-auth/react";
-import { initiate } from "@/actions/useraction";
 
 const DoctorProfilePage = () => {
   const { data: session, status } = useSession();
@@ -12,10 +11,10 @@ const DoctorProfilePage = () => {
   const [doctorData, setDoctorData] = useState({});
   const [paymentDiv, setPaymentDiv] = useState(false);
   const [paymentform, setpaymentform] = useState({});
-  const [patientEmail, setpatientEmail] = useState()
+  const [patientEmail, setpatientEmail] = useState();
 
   useEffect(() => {
-    setpatientEmail(session?.user?.email)
+    setpatientEmail(session?.user?.email);
     setpaymentform({
       doctorEmail: doctorData?.email,
       doctorName: doctorData?.name,
@@ -24,74 +23,25 @@ const DoctorProfilePage = () => {
       problem: "",
       fees: doctorData?.fees,
     });
-  }, [session,doctorData])
-  
-  const pay = async (paymentform) => {
-    const { fees, doctorEmail, doctorName, patientEmail, patientName, problem } =
-      paymentform;
-    console.log("Payment form data:", {
-      fees,
-      doctorEmail,
-      doctorName,
-      patientEmail,
-      patientName,
-      problem,
-    });
-  
-    let a = await initiate(
-      doctorEmail,
-      doctorName,
-      patientEmail,
-      patientName,
-      problem,
-      fees
-    );
-    console.log("Initiate response:", a);
-  
-    if (!a?.success) {
-      alert(a?.error || "Failed to initiate payment due to an unknown error");
-      return;
-    }
-  
-    const orderId = a.order.id;
-    console.log("Order ID:", orderId);
-  
-    // Ensure Razorpay is loaded on the client side
-    if (!window.Razorpay) {
-      alert("Razorpay SDK not loaded. Please check your script inclusion.");
-      return;
-    }
-  
-    const options = {
-      key: "YOUR_RAZORPAY_KEY_ID", // Replace with actual key or fetch dynamically
-      amount: fees * 100,
-      currency: "INR",
-      name: "Jeevni",
-      description: "Test Transaction",
-      image: "https://example.com/your_logo",
-      order_id: orderId,
-      callback_url: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/razorpay`,
-      prefill: {
-        name: patientName,
-        email: patientEmail,
-        contact: "9876543210",
-      },
-      notes: {
-        address: "Razorpay Corporate Office",
-      },
-      theme: {
-        color: "#3399cc",
-      },
-    };
-  
-    const rzp1 = new window.Razorpay(options);
-    rzp1.open();
-  };
-  
+  }, [session, doctorData]);
 
   const handlechange = (e) => {
     setpaymentform({ ...paymentform, [e.target.name]: e.target.value });
   };
+
+  const handleAppointment = async() => {
+    // console.log("working well");
+    
+    await addAppointment(
+      paymentform.doctorEmail,
+      paymentform.doctorName,
+      paymentform.patientEmail,
+      paymentform.patientName,
+      paymentform.problem,
+      paymentform.fees
+    )
+    router.push("/patientDashboard?appointmentDone=true")
+  }
 
   useEffect(() => {
     const checkDoctor = async () => {
@@ -192,7 +142,7 @@ const DoctorProfilePage = () => {
             {/* Pay Button */}
             <button
               type="button"
-              onClick={() => pay(paymentform)}
+              onClick={handleAppointment}
               className="text-white bg-gradient-to-r from-green-400 to-teal-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full disabled:opacity-50"
               disabled={
                 paymentform.patientName.length === 0 ||

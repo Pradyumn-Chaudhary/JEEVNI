@@ -4,77 +4,6 @@ import User from "@/model/user";
 import { v4 as uuidv4 } from "uuid";
 import Razorpay from "razorpay";
 
-export const initiate = async (
-  doctorEmail,
-  doctorName,
-  patientEmail,
-  patientName,
-  problem,
-  fees
-) => {
-  try {
-    console.log("Initiating payment with:", {
-      doctorEmail,
-      doctorName,
-      patientEmail,
-      patientName,
-      problem,
-      fees,
-    });
-
-    // Fetch doctor details
-    let user = await User.findOne({ email: doctorEmail });
-    if (!user) {
-      throw new Error("Doctor not found");
-    }
-
-    let secret = user.razorpaysecret;
-    let id = user.razorpayid;
-    console.log("Doctor Razorpay credentials:", { id, secret });
-
-    if (!id || !secret) {
-      throw new Error("Razorpay credentials are missing for this doctor");
-    }
-
-    // Connect to the database
-    await connectDB();
-
-    // Create a new Razorpay instance
-    const razorpay = new Razorpay({
-      key_id: id,
-      key_secret: secret,
-    });
-
-    // Create a new order in Razorpay
-    const options = {
-      amount: fees * 100, // Convert to paisa
-      currency: "INR",
-      receipt: `receipt_${Date.now()}`,
-      payment_capture: 1,
-    };
-
-    const order = await razorpay.orders.create(options);
-    console.log("Razorpay order created:", order);
-
-    // Save the payment request to the database
-    await addAppointment(
-      doctorEmail,
-      doctorName,
-      patientEmail,
-      patientName,
-      problem,
-      fees
-    );
-
-    return { success: true, order };
-  } catch (error) {
-    console.error("Error initiating payment:", error);
-    return { success: false, error: error.message || "Unknown error in initiate" };
-  }
-};
-
-
-
 export const updateProfile = async (data, email) => {
   await connectDB();
   if (data?.username) {
@@ -162,6 +91,13 @@ export const addAppointment = async (
   problem,
   fees
 ) => {
+  console.log(doctorEmail,
+    doctorName,
+    patientEmail,
+    patientName,
+    problem,
+    fees);
+  
   try {
     const id = uuidv4();
     console.log("Generated appointment ID:", id);

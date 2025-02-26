@@ -41,7 +41,7 @@ const PatientDashboard = () => {
   return (
     <div className="bg-gray-100">
       <div className="flex h-screen">
-        {console.log(patientData)}
+        {/* {console.log(patientData)} */}
         <div className="w-1/4 bg-white p-6 shadow-lg flex flex-col justify-between">
           <div className="text-center">
             <Image
@@ -129,10 +129,10 @@ const PatientDashboard = () => {
                           👨‍⚕️ Doctor: {appointment.doctorName}
                         </p>
                         <p className="text-gray-600">
-                          🗓 Date: {appointment.date}
+                          🗓 Date: {appointment.date.toLocaleString()}
                         </p>
                         <p className="text-gray-600">
-                          💰 Fees: ₹{appointment.amount}
+                          💰 Fees: ₹{appointment.fees}
                         </p>
                       </div>
                       <div>

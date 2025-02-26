@@ -1,18 +1,24 @@
 import mongoose from "mongoose";
 const { Schema, model, models } = mongoose;
 
-const AppointmentSchema = new Schema(
-  {
-    appointmentId: { type: String, required: true }, // Manually assigned unique ID
-    doctorEmail: { type: String }, // User's email
-    fees: { type: Number, required: true }, // Payment amount
-    patientName: { type: String, require: true },
-    doctorName: { type: String, require: true },
-    problem: { type: String },
-    paymentDone:{type:Boolean,default:false},
-  },
-  { timestamps: true } // MongoDB will automatically generate `_id`
-);
+const AppointmentSchema = new Schema({
+  appointmentId: { type: String, required: true }, // Manually assigned unique ID
+  doctorEmail: { type: String }, // User's email
+  fees: { type: Number }, // Payment amount
+  patientName: { type: String },
+  doctorName: { type: String },
+  problem: { type: String },
+  paymentDone: { type: Boolean, default: false },
+  date: { type: Date, default: Date.now },
+});
+
+const HistorySchema = new Schema({
+  doctorEmail: { type: String },
+  doctorName: { type: String },
+  problem: { type: String },
+  date: { type: Date },
+  fees: { type: Number },
+});
 
 const UserSchema = new Schema(
   {
@@ -26,7 +32,7 @@ const UserSchema = new Schema(
     experience: { type: Number },
     fees: { type: Number },
     appointments: { type: [AppointmentSchema], default: [] }, // Array of appointment objects
-    history: { type: [String], default: [] },
+    history: { type: [HistorySchema], default: [] },
     razorpayid: { type: String },
     razorpaysecret: { type: String },
     category: { type: String },

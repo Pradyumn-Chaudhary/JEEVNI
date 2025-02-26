@@ -2,7 +2,7 @@
 import { fetchuser } from "@/actions/useraction";
 import React, { useEffect,useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSession,signOut } from "next-auth/react";
 import Image from "next/image";
 
 const Page = () => {
@@ -100,7 +100,6 @@ const Page = () => {
         <div>
           <p className="text-md font-medium">🧑‍⚕️ Patient Name: {appointment.patientName}</p>
           <p className="text-gray-600">🩺 Problem: {appointment.problem}</p>
-          <p className="text-gray-600">💰 Amount: ₹{appointment.amount}</p>
         </div>
         <div>
           <button className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 transition">
