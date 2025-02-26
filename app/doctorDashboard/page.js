@@ -100,6 +100,9 @@ const Page = () => {
         <div>
           <p className="text-md font-medium">🧑‍⚕️ Patient Name: {appointment.patientName}</p>
           <p className="text-gray-600">🩺 Problem: {appointment.problem}</p>
+          <p className="text-gray-600">
+                          🗓 Date: {appointment.date.toLocaleString()}
+                        </p>
         </div>
         <div>
           <button className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 transition">
