@@ -61,7 +61,7 @@ const DoctorProfilePage = () => {
         {/* Main Content Area */}
         <div className="flex items-center space-x-6">
           <img
-            src="/avatar.png"
+            src={session?.user?.image || "/avatar.png"}
             alt="Dr. John Smith's Profile Picture"
             className="w-24 h-24 rounded-full"
           />
