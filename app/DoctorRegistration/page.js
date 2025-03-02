@@ -21,6 +21,8 @@ const Page = () => {
     razorpayid: "",
     razorpaysecret: "",
     isDoctor: "",
+    about: "",
+    image: "",
   });
 
   useEffect(() => {
@@ -45,7 +47,8 @@ const Page = () => {
       setForm((prevForm) => ({
         ...prevForm,
         ...userData,
-        isDoctor: userData.isDoctor || "none",// ✅ Ensure "doctor" is always set
+        isDoctor: userData.isDoctor || "none", // ✅ Ensure "doctor" is always set
+        image: userData.image || "",
       }));
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -63,7 +66,7 @@ const Page = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const updatedForm = { ...form, isDoctor: "doctor" };
+      const updatedForm = { ...form, isDoctor: "doctor", image: session?.user?.image };
       const result = await updateProfile(updatedForm, session.user.email);
       if (!result.success) {
         alert(result);
@@ -164,6 +167,22 @@ const Page = () => {
               className="w-full mt-1 p-2 border rounded-lg outline-indigo-500"
             />
           </div>
+
+          <div>
+            <label className="block text-gray-700 font-semibold">
+              About
+            </label>
+            <input
+              value={form.about || ""}
+              onChange={handleChange}
+              id="about"
+              type="text"
+              name="about"
+              required
+              className="w-full mt-1 p-2 border rounded-lg outline-indigo-500"
+            />
+          </div>
+
           <div>
             <label className="block text-gray-700 font-semibold">Gender</label>
             <div className="flex gap-4 mt-1">

@@ -89,7 +89,7 @@ export default function Home() {
                       >
                         <div className="w-9 h-9">
                           <img
-                            src="/avatar.png"
+                            src={user.image ||"/avatar.png"}
                             alt="dp"
                             className="rounded-full object-cover w-full h-full"
                           />

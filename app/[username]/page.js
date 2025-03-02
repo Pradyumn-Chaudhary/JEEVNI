@@ -112,7 +112,7 @@ const DoctorProfilePage = () => {
         {/* Main Content Area */}
         <div className="flex items-center space-x-6">
           <img
-            src="/avatar.png"
+            src={doctorData?.image || "/avatar.png"}
             alt="Dr. John Smith's Profile Picture"
             className="w-24 h-24 rounded-full"
           />
@@ -133,9 +133,7 @@ const DoctorProfilePage = () => {
         <div className="mt-6">
           <h3 className="text-lg font-semibold">About</h3>
           <p className="text-gray-600 mt-2">
-            Dr. John Smith is a highly experienced cardiologist specializing in
-            heart diseases and treatments. He has helped thousands of patients
-            recover and live healthier lives.
+            {doctorData?.about}
           </p>
         </div>
 

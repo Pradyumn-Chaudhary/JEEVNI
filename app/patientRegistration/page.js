@@ -38,6 +38,7 @@ const PatientRegistration = () => {
         ...prevForm,
         ...userData,
         isDoctor: userData.isDoctor || "none",
+        image: userData.image || "",
       }));
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -55,7 +56,7 @@ const PatientRegistration = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const updatedForm = { ...form, isDoctor: "patient" };
+      const updatedForm = { ...form, isDoctor: "patient" , image: session?.user?.image};
       const result = await updateProfile(updatedForm, session.user.email);
       if (!result.success) {
         alert(result);

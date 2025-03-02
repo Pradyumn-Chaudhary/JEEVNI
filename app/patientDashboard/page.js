@@ -46,7 +46,7 @@ const PatientDashboard = () => {
         <div className="w-1/4 bg-white p-6 shadow-lg flex flex-col justify-between">
           <div className="text-center">
             <Image
-              src={session?.user?.image || "/avatar.png"}
+              src={patientData?.image || "/avatar.png"}
               alt="Profile Picture"
               className="mx-auto rounded-full"
               width={100}

@@ -48,7 +48,7 @@ const Page = () => {
       <div className="w-1/4 bg-white p-6 shadow-lg flex flex-col justify-between">
   <div className="text-center">
     <Image
-      src={session?.user?.image || "/avatar.png"}
+      src={doctorData?.image || "/avatar.png"}
       alt="Profile Picture"
       className="mx-auto rounded-full"
       width={100}

@@ -39,6 +39,8 @@ const UserSchema = new Schema(
     rating: { type: Number, default: 0 },
     isDoctor: { type: String, default: "none" },
     isApproved: { type: Boolean, default: false },
+    about: { type: String },
+    image: {type: String},
   },
   { timestamps: true }
 );

@@ -4,58 +4,59 @@ import User from "@/model/user";
 import { v4 as uuidv4 } from "uuid";
 import Razorpay from "razorpay";
 
-export const initiate = async (doctorEmail,
-  doctorName,
-  patientEmail,
-  patientName,
-  problem,
-  fees) => {
-  try {
-  let user = await User.findOne({ email: doctorEmail});
-  let secret = user.razorpaysecret;
-  let id = user.razorpayid;
-  
-  if (!id || !secret) {
-  throw new Error("Razorpay credentials are missing.");
-  }
-  
-  // ✅ Connect to the database
-  await connectDB();
-  
-  // ✅ Create a new Razorpay instance
-  const razorpay = new Razorpay({
-  key_id: id,
-  key_secret: secret,
-  });
-  
-  // ✅ Create a new order in Razorpay
-  const options = {
-  amount: fees * 100, // Convert to paisa
-  currency: "INR",
-  receipt: `receipt_${Date.now()}`,
-  payment_capture: 1,
-  };
-  
-  const order = await razorpay.orders.create(options);
-  
-  // ✅ Save the payment request to the database
-  await addAppointment(
-  order.id,
+export const initiate = async (
   doctorEmail,
   doctorName,
   patientEmail,
   patientName,
   problem,
   fees
-  )
-  
-  
-  return { success: true, order };
+) => {
+  try {
+    let user = await User.findOne({ email: doctorEmail });
+    let secret = user.razorpaysecret;
+    let id = user.razorpayid;
+
+    if (!id || !secret) {
+      throw new Error("Razorpay credentials are missing.");
+    }
+
+    // ✅ Connect to the database
+    await connectDB();
+
+    // ✅ Create a new Razorpay instance
+    const razorpay = new Razorpay({
+      key_id: id,
+      key_secret: secret,
+    });
+
+    // ✅ Create a new order in Razorpay
+    const options = {
+      amount: fees * 100, // Convert to paisa
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+      payment_capture: 1,
+    };
+
+    const order = await razorpay.orders.create(options);
+
+    // ✅ Save the payment request to the database
+    await addAppointment(
+      order.id,
+      doctorEmail,
+      doctorName,
+      patientEmail,
+      patientName,
+      problem,
+      fees
+    );
+
+    return { success: true, order };
   } catch (error) {
-  console.error("Error initiating payment:", error);
-  return { success: false, error: error.message };
+    console.error("Error initiating payment:", error);
+    return { success: false, error: error.message };
   }
-  };
+};
 
 export const updateProfile = async (data, email) => {
   await connectDB();
@@ -111,6 +112,8 @@ export const fetchuser = async (email) => {
       isApproved: user?.isApproved || false,
       rating: user?.rating || "",
       appointments: user?.appointments || [],
+      about: user?.about || "",
+      image: user?.image || "",
     };
   } catch (error) {
     console.error("Error fetching user:", error);
@@ -128,7 +131,9 @@ export const fetchDoctor = async (prefix) => {
       { category: { $regex: `^${prefix}`, $options: "i" } },
     ],
   })
-    .select("name username fees category qualifications experience rating")
+    .select(
+      "name username fees category qualifications experience rating image"
+    )
     .sort({ rating: -1 })
     .limit(7)
     .lean();
