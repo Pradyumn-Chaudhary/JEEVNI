@@ -120,7 +120,7 @@ const PatientDashboard = () => {
                 <p className="text-gray-500">No upcoming appointments</p>
               ) : (
                 <div className="space-y-4">
-                  {patientData?.appointments?.map((appointment) => (
+                  {patientData?.appointments?.filter((appointment) => appointment.paymentDone === true).map((appointment) => (
                     <div
                       key={appointment.appointmentId}
                       className="p-4 border rounded-lg shadow-sm flex justify-between items-center bg-white"

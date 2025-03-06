@@ -93,7 +93,7 @@ const Page = () => {
     <p className="text-gray-500">No appointments for today</p>
   ) : (
     <div className="space-y-4">
-      {doctorData?.appointments?.map((appointment, index) => (
+      {doctorData?.appointments?.filter((appointment) => appointment.paymentDone === true).map((appointment, index) => (
         <div
         key={appointment.appointmentId}
         className="p-4 border rounded-lg shadow-sm flex justify-between items-center bg-white"
