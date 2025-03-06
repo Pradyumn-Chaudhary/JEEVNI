@@ -46,14 +46,15 @@ const DoctorProfilePage = () => {
     );
 
     if (!a.order) {
-      toast.error(a.error);
+      alert(a.error);
+      // toast.error(a.error);
     }
     let orderId = a.order.id;
-    console.log(a);
-    
-    console.log("Razorpay Key ID:", doctorData.razorpayid);
+    console.log("Aa", a);
+
+    console.log("Razorpay Key ID:", a.id);
     var options = {
-      key: doctorData.razorpayid, //Key ID generated from the Dashboard
+      key: a.id, //Key ID generated from the Dashboard
       amount: paymentform.fees * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
       currency: "INR",
       name: "Jeevni",
@@ -74,9 +75,9 @@ const DoctorProfilePage = () => {
       },
     };
     console.log("kuch toh dikkat h");
-    const rzp1 = new Razorpay(options);
-    console.log("kya dikkat h yr");
-    rzp1.open();    
+    const rzp1 = new window.Razorpay(options); 
+    console.log("ek dikkat toh gyi");
+    rzp1.open();
   };
 
   const handleAppointment = async () => {
@@ -105,113 +106,111 @@ const DoctorProfilePage = () => {
 
   return (
     <>
-       <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
-     <div className="bg-gray-100 flex flex-col min-h-screen">
-      {console.log(doctorData)}
-      <div className="w-[95%] m-auto my-5">
-        {/* Main Content Area */}
-        <div className="flex items-center space-x-6">
-          <img
-            src={doctorData?.image || "/avatar.png"}
-            alt="Dr. John Smith's Profile Picture"
-            className="w-24 h-24 rounded-full"
-          />
-          <div>
-            <h2 className="text-2xl font-semibold">{doctorData?.name}</h2>
-            <p className="text-gray-600">{doctorData?.category}</p>
-            <p className="text-gray-500">
-              {doctorData?.experience}+ Years Experience
+      <Script src="https://checkout.razorpay.com/v1/checkout.js"></Script>
+      <div className="bg-gray-100 flex flex-col min-h-screen">
+        {console.log(doctorData)}
+        <div className="w-[95%] m-auto my-5">
+          {/* Main Content Area */}
+          <div className="flex items-center space-x-6">
+            <img
+              src={doctorData?.image || "/avatar.png"}
+              alt="Dr. John Smith's Profile Picture"
+              className="w-24 h-24 rounded-full"
+            />
+            <div>
+              <h2 className="text-2xl font-semibold">{doctorData?.name}</h2>
+              <p className="text-gray-600">{doctorData?.category}</p>
+              <p className="text-gray-500">
+                {doctorData?.experience}+ Years Experience
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold">Fees</h3>
+            <p className="text-gray-600 mt-2">₹{doctorData?.fees}</p>
+          </div>
+
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold">About</h3>
+            <p className="text-gray-600 mt-2">{doctorData?.about}</p>
+          </div>
+
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold">Description</h3>
+            <p className="text-gray-600 mt-2">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit...
             </p>
           </div>
-        </div>
 
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold">Fees</h3>
-          <p className="text-gray-600 mt-2">₹{doctorData?.fees}</p>
-        </div>
-
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold">About</h3>
-          <p className="text-gray-600 mt-2">
-            {doctorData?.about}
-          </p>
-        </div>
-
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold">Description</h3>
-          <p className="text-gray-600 mt-2">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit...
-          </p>
-        </div>
-
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold">Contact Information</h3>
-          <p className="text-gray-600">📞 +1 234 567 890</p>
-          <p className="text-gray-600">📍 New York, USA</p>
-        </div>
-      </div>
-
-      {/* Fixed Footer with Appointment Button */}
-      <div className="fixed bottom-0 left-0 w-full bg-white shadow-md p-4 flex justify-center">
-        <button
-          onClick={() => setPaymentDiv(true)}
-          className="bg-blue-500 text-white px-6 py-3 rounded-lg text-lg shadow-md hover:bg-blue-600 transition"
-        >
-          Book Appointment
-        </button>
-      </div>
-      {/* {console.log(session)} */}
-      {/* {console.log(paymentform)}/ */}
-      {/* Payment Div */}
-      {paymentDiv && (
-        <div className="w-[70%] h-[75%] absolute bottom-0 right-0 bg-gradient-to-br from-indigo-500 to-purple-600 p-10 rounded-xl text-white">
-          <div className="flex gap-4 flex-col">
-            <input
-              name="patientName"
-              onChange={handlechange}
-              value={paymentform.patientName}
-              type="text"
-              placeholder="Enter name"
-              className="bg-gray-800 text-white rounded-xl w-full p-4 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
-              maxLength={24}
-            />
-            <input
-              name="problem"
-              onChange={handlechange}
-              value={paymentform.problem}
-              type="text"
-              placeholder="Enter problem"
-              className="bg-gray-800 text-white rounded-xl w-full p-4 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
-              maxLength={100}
-            />
-            <span className="text-xs text-gray-300">
-              *All fields are required
-            </span>
-
-            {/* Pay Button */}
-            <button
-              type="button"
-              onClick={handleAppointment}
-              className="text-white bg-gradient-to-r from-green-400 to-teal-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full disabled:opacity-50"
-              disabled={
-                paymentform.patientName.length === 0 ||
-                paymentform.problem.length === 0
-              }
-            >
-              Pay ₹{doctorData?.fees}
-            </button>
-
-            {/* Cancel Button */}
-            <button
-              onClick={() => setPaymentDiv(false)}
-              className="bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-lg"
-            >
-              Cancel
-            </button>
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold">Contact Information</h3>
+            <p className="text-gray-600">📞 +1 234 567 890</p>
+            <p className="text-gray-600">📍 New York, USA</p>
           </div>
         </div>
-      )}
-    </div>
+
+        {/* Fixed Footer with Appointment Button */}
+        <div className="fixed bottom-0 left-0 w-full bg-white shadow-md p-4 flex justify-center">
+          <button
+            onClick={() => setPaymentDiv(true)}
+            className="bg-blue-500 text-white px-6 py-3 rounded-lg text-lg shadow-md hover:bg-blue-600 transition"
+          >
+            Book Appointment
+          </button>
+        </div>
+        {/* {console.log(session)} */}
+        {/* {console.log(paymentform)}/ */}
+        {/* Payment Div */}
+        {paymentDiv && (
+          <div className="w-[70%] h-[75%] absolute bottom-0 right-0 bg-gradient-to-br from-indigo-500 to-purple-600 p-10 rounded-xl text-white">
+            <div className="flex gap-4 flex-col">
+              <input
+                name="patientName"
+                onChange={handlechange}
+                value={paymentform.patientName}
+                type="text"
+                placeholder="Enter name"
+                className="bg-gray-800 text-white rounded-xl w-full p-4 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
+                maxLength={24}
+              />
+              <input
+                name="problem"
+                onChange={handlechange}
+                value={paymentform.problem}
+                type="text"
+                placeholder="Enter problem"
+                className="bg-gray-800 text-white rounded-xl w-full p-4 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
+                maxLength={100}
+              />
+              <span className="text-xs text-gray-300">
+                *All fields are required
+              </span>
+
+              {/* Pay Button */}
+              <button
+                type="button"
+                onClick={pay}
+                className="text-white bg-gradient-to-r from-green-400 to-teal-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full disabled:opacity-50"
+                disabled={
+                  paymentform.patientName.length === 0 ||
+                  paymentform.problem.length === 0
+                }
+              >
+                Pay ₹{doctorData?.fees}
+              </button>
+
+              {/* Cancel Button */}
+              <button
+                onClick={() => setPaymentDiv(false)}
+                className="bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-lg"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </>
   );
 };

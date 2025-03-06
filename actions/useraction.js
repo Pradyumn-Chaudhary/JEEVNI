@@ -51,7 +51,7 @@ export const initiate = async (
       fees
     );
 
-    return { success: true, order };
+    return { success: true, order,id };
   } catch (error) {
     console.error("Error initiating payment:", error);
     return { success: false, error: error.message };
@@ -142,7 +142,7 @@ export const fetchDoctor = async (prefix) => {
 };
 
 export const addAppointment = async (
-  // id,
+  id,
   doctorEmail,
   doctorName,
   patientEmail,
@@ -160,7 +160,7 @@ export const addAppointment = async (
   );
 
   try {
-    const id = uuidv4();
+    // const id = uuidv4();
     console.log("Generated appointment ID:", id);
 
     // Find doctor and add appointment details
