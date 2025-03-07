@@ -20,6 +20,12 @@ const DoctorProfilePage = () => {
   const [patientEmail, setpatientEmail] = useState();
 
   useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
+  useEffect(() => {
     setpatientEmail(session?.user?.email);
     setpaymentform({
       doctorEmail: doctorData?.email,
@@ -75,7 +81,7 @@ const DoctorProfilePage = () => {
       },
     };
     console.log("kuch toh dikkat h");
-    const rzp1 = new window.Razorpay(options); 
+    const rzp1 = new window.Razorpay(options);
     console.log("ek dikkat toh gyi");
     rzp1.open();
   };
