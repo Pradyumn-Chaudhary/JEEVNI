@@ -8,16 +8,9 @@ const AppointmentSchema = new Schema({
   patientName: { type: String },
   doctorName: { type: String },
   problem: { type: String },
+  isHistory: { type: Boolean, default: false },
   paymentDone: { type: Boolean, default: false },
   date: { type: Date, default: Date.now },
-});
-
-const HistorySchema = new Schema({
-  doctorEmail: { type: String },
-  doctorName: { type: String },
-  problem: { type: String },
-  date: { type: Date },
-  fees: { type: Number },
 });
 
 const UserSchema = new Schema(
@@ -32,7 +25,6 @@ const UserSchema = new Schema(
     experience: { type: Number },
     fees: { type: Number },
     appointments: { type: [AppointmentSchema], default: [] }, // Array of appointment objects
-    history: { type: [HistorySchema], default: [] },
     razorpayid: { type: String },
     razorpaysecret: { type: String },
     category: { type: String },
@@ -40,7 +32,10 @@ const UserSchema = new Schema(
     isDoctor: { type: String, default: "none" },
     isApproved: { type: Boolean, default: false },
     about: { type: String },
-    image: {type: String},
+    image: { type: String },
+    JCash: { type: Number, default: 0 },
+    noAppoint: { type: Number, default: 0 },
+    medicine: { type: String },
   },
   { timestamps: true }
 );
