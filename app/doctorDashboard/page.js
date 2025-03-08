@@ -86,7 +86,14 @@ const Page = () => {
     <p className="text-gray-800 font-medium">Location: <span className="text-gray-600">{doctorData?.location}</span></p>
     <p className="text-gray-800 font-medium">Qualification: <span className="text-gray-600">{doctorData?.qualification}</span></p>
           </div>
-          <div className="text-center mt-6">
+          <div className="text-center mt-6 flex gap-4">
+            <Link href="/">
+            <button
+            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
+          >
+            Home
+              </button>
+            </Link>
           <button
             onClick={() => signOut()}
             className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"

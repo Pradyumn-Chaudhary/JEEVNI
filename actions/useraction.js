@@ -51,7 +51,7 @@ export const initiate = async (
       fees
     );
 
-    return { success: true, order,id };
+    return { success: true, order, id };
   } catch (error) {
     console.error("Error initiating payment:", error);
     return { success: false, error: error.message };
@@ -218,31 +218,29 @@ export const fetchForUsername = async (username) => {
 export const doneAppointment = async (appointmentId, medicine) => {
   await connectDB();
   await User.updateOne(
-    { 
+    {
       isDoctor: "doctor", // Ensures the user is a doctor
-      "appointments.appointmentId": appointmentId // Finds the correct appointment
-    }, 
-    { 
-      $set: { 
-        "appointments.$.isHistory": true, 
+      "appointments.appointmentId": appointmentId, // Finds the correct appointment
+    },
+    {
+      $set: {
+        "appointments.$.isHistory": true,
         "appointments.$.paymentDone": false,
-        "appointments.$.medicine" : medicine
-      } 
-    }
-  ); 
-
-  await User.updateOne(
-    { 
-      isDoctor: "patient", // Ensures the user is a doctor
-      "appointments.appointmentId": appointmentId // Finds the correct appointment
-    }, 
-    { 
-      $set: { 
-        "appointments.$.isHistory": true, 
-        "appointments.$.paymentDone": false,
-        "appointments.$.medicine" : medicine
-      } 
+      },
     }
   );
 
-}
+  await User.updateOne(
+    {
+      isDoctor: "patient", // Ensures the user is a doctor
+      "appointments.appointmentId": appointmentId, // Finds the correct appointment
+    },
+    {
+      $set: {
+        "appointments.$.isHistory": true,
+        "appointments.$.paymentDone": false,
+        "appointments.$.medicine": medicine,
+      },
+    }
+  );
+};

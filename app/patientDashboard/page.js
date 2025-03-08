@@ -76,7 +76,14 @@ const PatientDashboard = () => {
             </p>
           </div>
 
-          <div className="text-center mt-6">
+          <div className="text-center mt-6 flex gap-4">
+          <Link href="/">
+            <button
+            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
+          >
+            Home
+              </button>
+            </Link>
             <button
               onClick={() => signOut()}
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
