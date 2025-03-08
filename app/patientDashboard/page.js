@@ -58,9 +58,6 @@ const PatientDashboard = () => {
 
           <div className="mt-6 space-y-3">
             <p className="text-gray-800 font-medium">
-              Age: <span className="text-gray-600">{patientData?.age}</span>
-            </p>
-            <p className="text-gray-800 font-medium">
               Gender:{" "}
               <span className="text-gray-600">{patientData?.gender}</span>
             </p>
@@ -150,28 +147,35 @@ const PatientDashboard = () => {
             </div>
           ) : (
             <div className="p-4 bg-white shadow rounded">
-              <h2 className="text-lg font-semibold mb-2">History</h2>
-              {patientData?.history?.length === 0 ? (
-                <p className="text-gray-500">No past appointments</p>
-              ) : (
-                <div className="space-y-4">
-                  {patientData?.history?.map((history) => (
-                    <div
-                      key={history.historyId}
-                      className="p-4 border rounded-lg shadow-sm bg-white"
-                    >
+            <h2 className="text-lg font-semibold mb-2">Appointments</h2>
+            {patientData?.appointments?.length === 0 ? (
+              <p className="text-gray-500">No upcoming appointments</p>
+            ) : (
+              <div className="space-y-4">
+                {patientData?.appointments?.filter((appointment) => appointment.isHistory === true).map((appointment) => (
+                  <div
+                    key={appointment.appointmentId}
+                    className="p-4 border rounded-lg shadow-sm flex justify-between items-center bg-white"
+                  >
+                    <div>
                       <p className="text-md font-medium">
-                        👨‍⚕️ Doctor: {history.doctorName}
+                        👨‍⚕️ Doctor: {appointment.doctorName}
                       </p>
-                      <p className="text-gray-600">🗓 Date: {history.date}</p>
                       <p className="text-gray-600">
-                        💊 Diagnosis: {history.diagnosis}
+                        🗓 Date: {appointment.date.toLocaleString()}
+                      </p>
+                      <p className="text-gray-600">
+                        💰 Fees: ₹{appointment.fees}
                       </p>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                    <div className="w-1/3 text-gray-500">
+                      {appointment.medicine}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           )}
         </div>
       </div>
