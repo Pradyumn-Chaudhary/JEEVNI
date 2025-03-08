@@ -114,6 +114,7 @@ export const fetchuser = async (email) => {
       appointments: user?.appointments || [],
       about: user?.about || "",
       image: user?.image || "",
+      JCash: user?.JCash || 0,
     };
   } catch (error) {
     console.error("Error fetching user:", error);
@@ -160,7 +161,11 @@ export const addAppointment = async (
   );
 
   try {
-    // const id = uuidv4();
+    let paymentStatus = false;
+    if (id == 0) {
+      id = uuidv4();
+      paymentStatus = true;
+    }
     console.log("Generated appointment ID:", id);
 
     // Find doctor and add appointment details
@@ -173,7 +178,7 @@ export const addAppointment = async (
       appointmentId: id,
       patientName: patientName,
       problem: problem,
-      paymentDone: false,
+      paymentDone: paymentStatus,
     });
 
     await doctor.save();
@@ -184,7 +189,7 @@ export const addAppointment = async (
     if (!patient) {
       throw new Error("Patient not found");
     }
-
+    patient.JCash += fees / 10;
     patient.appointments.push({
       appointmentId: id,
       doctorName: doctorName,

@@ -7,6 +7,7 @@ import {
   addAppointment,
   initiate,
   fetchByUsername,
+  fetchuser,
 } from "@/actions/useraction";
 import { useSession } from "next-auth/react";
 
@@ -18,6 +19,12 @@ const DoctorProfilePage = () => {
   const [paymentDiv, setPaymentDiv] = useState(false);
   const [paymentform, setpaymentform] = useState({});
   const [patientEmail, setpatientEmail] = useState();
+  const [patient, setPatient] = useState({});
+
+  const PatientDataRetrival = async () => {
+    const Data = await fetchuser(patientEmail);
+    setPatient(Data);
+  };
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -35,6 +42,7 @@ const DoctorProfilePage = () => {
       problem: "",
       fees: doctorData?.fees,
     });
+    PatientDataRetrival();
   }, [session, doctorData]);
 
   const handlechange = (e) => {
@@ -87,16 +95,29 @@ const DoctorProfilePage = () => {
   };
 
   const handleAppointment = async () => {
-    await addAppointment(
-      paymentform.doctorEmail,
-      paymentform.doctorName,
-      paymentform.patientEmail,
-      paymentform.patientName,
-      paymentform.problem,
-      paymentform.fees
-    );
-    router.push("/patientDashboard?appointmentDone=true");
+    try {
+      // Call the addAppointment function and wait for it to complete
+      console.log("hhhcdjhbdhbh");
+      await addAppointment(
+        0,
+        paymentform.doctorEmail,
+        paymentform.doctorName,
+        paymentform.patientEmail,
+        paymentform.patientName,
+        paymentform.problem,
+        paymentform.fees
+      );
+      console.log("892y89d389y29");
+      // If successful, redirect to patientDashboard with the query parameter
+      router.push("/patientDashboard?paymentDone=true");
+    } catch (error) {
+      // Handle any errors that occur during the appointment creation
+      console.error("Error adding appointment:", error);
+      // Optionally, show a user-friendly error message here
+      alert("There was an error while adding the appointment. Please try again.");
+    }
   };
+  
 
   useEffect(() => {
     const checkDoctor = async () => {
@@ -204,6 +225,20 @@ const DoctorProfilePage = () => {
                 }
               >
                 Pay ₹{doctorData?.fees}
+              </button>
+
+              {/* Pay by Jeevni Cash */}
+              <button
+                type="button"
+                onClick={handleAppointment}
+                className="text-white bg-gradient-to-r from-yellow-400 to-yellow-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:focus:ring-yellow-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full disabled:opacity-50"
+                disabled={
+                  paymentform.patientName.length === 0 ||
+                  paymentform.problem.length === 0 ||
+                  patient?.JCash < doctorData?.fees
+                }
+              >
+                Pay {doctorData?.fees} Jeevni Cash
               </button>
 
               {/* Cancel Button */}

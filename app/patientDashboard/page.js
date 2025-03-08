@@ -58,6 +58,10 @@ const PatientDashboard = () => {
 
           <div className="mt-6 space-y-3">
             <p className="text-gray-800 font-medium">
+              Jeevni Cash:{" "}
+              <span className="text-gray-600">{patientData?.JCash}💸</span>
+            </p>
+            <p className="text-gray-800 font-medium">
               Gender:{" "}
               <span className="text-gray-600">{patientData?.gender}</span>
             </p>

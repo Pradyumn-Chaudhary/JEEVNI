@@ -121,12 +121,7 @@ export default function Home() {
           {!session ? (
             <Link href="/login">
               <div className="flex space-x-2">
-                <a
-                  href="#"
-                  className="bg-[#f0efeb] text-[#2D4C73] px-5 py-2 rounded-lg hover:bg-[#FDE2E4]"
-                >
                   Login/Signup
-                </a>
               </div>
             </Link>
           ) : (
