@@ -32,6 +32,7 @@ export default function Home() {
   const { data: session } = useSession(); // Get session data
   const [prefix, setprefix] = useState("");
   const [search, setsearch] = useState([]);
+  const [seeMore, setSeeMore] = useState(false)
 
   const handleSearch = (username) => {
     setprefix("");
@@ -82,24 +83,24 @@ export default function Home() {
     })();
   }, []);
 
-  const [visibleItems, setVisibleItems] = useState(5);
+  // const [visibleItems, setVisibleItems] = useState(5);
 
-  const loadMoreItems = () => {
-    setVisibleItems(categories.length);
-  };
+  // const loadMoreItems = () => {
+  //   setVisibleItems(categories.length);
+  // };
 
-  const seeLessItems = () => {
-    setVisibleItems(5);
-  };
+  // const seeLessItems = () => {
+  //   setVisibleItems(5);
+  // };
 
-  useEffect(() => {
-    // Hide "See More" button if all items are loaded
-    if (visibleItems >= categories.length) {
-      document.getElementById("seeMoreButton").style.display = "none";
-    } else {
-      document.getElementById("seeMoreButton").style.display = "block";
-    }
-  }, [visibleItems]);
+  // useEffect(() => {
+  //   // Hide "See More" button if all items are loaded
+  //   if (visibleItems >= categories.length) {
+  //     document.getElementById("seeMoreButton").style.display = "none";
+  //   } else {
+  //     document.getElementById("seeMoreButton").style.display = "block";
+  //   }
+  // }, [visibleItems]);
 
   return (
     <>
@@ -486,60 +487,61 @@ export default function Home() {
       </div>
 
       {/* Categories Grid */}
-      <div className="flex flex-wrap justify-start mt-5">
-        {categories.slice(0, visibleItems).map((category, index) => (
-          <div key={index} className="w-1/5 p-4">
-            <div className="grid-item">
-              <img
-                src={category.image}
-                alt={category.title}
-                className="w-full h-48 object-cover rounded-lg shadow-md"
-              />
-              <div className="grid-item-content mt-3">
-                <h3 className="text-xl font-semibold text-center">
-                  {category.title}
-                </h3>
-              </div>
-            </div>
+      <div className={`flex ${seeMore ? "flex-wrap" : "flex-nowrap"} justify-start mt-5`}>
+  {categories
+    .slice(0, seeMore ? categories.length : 5) // Show only 5 items when seeMore is false
+    .map((category, index) => (
+      <div key={index} className="w-1/5 p-4">
+        <div className="grid-item">
+          <img
+            src={category.image}
+            alt={category.title}
+            className="w-full h-48 object-cover rounded-lg shadow-md"
+          />
+          <div className="grid-item-content mt-3">
+            <h3 className="text-xl font-semibold text-center">
+              {category.title}
+            </h3>
           </div>
-        ))}
+        </div>
       </div>
+    ))}
+</div>
 
-      {/* Buttons to load more/less */}
-      <div className="mt-4 text-center">
-        {visibleItems < categories.length && (
-          <button
-            id="seeMoreButton"
-            onClick={loadMoreItems}
-            className="bg-blue-500 text-white px-4 py-2 rounded-full"
-          >
-            See More
-          </button>
-        )}
-        {visibleItems > 5 && (
-          <button
-            id="seeLessButton"
-            onClick={seeLessItems}
-            className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2"
-          >
-            See Less
-          </button>
-        )}
-      </div>
+{/* Button to toggle seeMore */}
+<div className="mt-4 text-center">
+  {!seeMore ? (
+    <button
+      onClick={() => setSeeMore(true)}
+      className="bg-blue-500 text-white px-4 py-2 rounded-full"
+    >
+      See More
+    </button>
+  ) : (
+    <button
+      onClick={() => setSeeMore(false)}
+      className="bg-blue-500 text-white px-4 py-2 rounded-full mt-2"
+    >
+      See Less
+    </button>
+  )}
+</div>
 
-      <div className="container mx-auto py-8">
-        <div id="gridContainer">{/* Grid items will be inserted here */}</div>
+
+
+    {/* <div className="container mx-auto py-8"> */}
+        {/* <div id="gridContainer">Grid items will be inserted here</div> */}
         {/* <button id="seeMoreButton" className="button">
           See More
         </button> */}
-        <button
+        {/* <button
           id="seeLessButton"
           className="button"
           style={{ display: "none" }}
         >
           See Less
-        </button>
-      </div>
+        </button> */}
+      {/* </div> */}
 
       <div className="flex justify-center mt-10 px-5 w-full bg-[#bcd4e6]">
         <img src="Untitled design (3).jpg" alt="" className="w-full h-auto" />
