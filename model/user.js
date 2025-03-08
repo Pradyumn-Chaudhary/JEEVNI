@@ -10,6 +10,7 @@ const AppointmentSchema = new Schema({
   problem: { type: String },
   isHistory: { type: Boolean, default: false },
   paymentDone: { type: Boolean, default: false },
+  medicine: { type: String, default: "" },
   date: { type: Date, default: Date.now },
 });
 
@@ -35,7 +36,6 @@ const UserSchema = new Schema(
     image: { type: String },
     JCash: { type: Number, default: 0 },
     noAppoint: { type: Number, default: 0 },
-    medicine: { type: String },
   },
   { timestamps: true }
 );

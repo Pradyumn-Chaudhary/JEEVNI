@@ -214,3 +214,33 @@ export const fetchForUsername = async (username) => {
   let u = await User.findOne({ username: username }).lean();
   return u;
 };
+
+export const doneAppointment = async (appointmentId) => {
+  await connectDB();
+  await User.updateOne(
+    { 
+      isDoctor: "doctor", // Ensures the user is a doctor
+      "appointments.appointmentId": appointmentId // Finds the correct appointment
+    }, 
+    { 
+      $set: { 
+        "appointments.$.isHistory": true, 
+        "appointments.$.paymentDone": false 
+      } 
+    }
+  ); 
+
+  await User.updateOne(
+    { 
+      isDoctor: "patient", // Ensures the user is a doctor
+      "appointments.appointmentId": appointmentId // Finds the correct appointment
+    }, 
+    { 
+      $set: { 
+        "appointments.$.isHistory": true, 
+        "appointments.$.paymentDone": false 
+      } 
+    }
+  );
+
+}

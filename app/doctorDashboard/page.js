@@ -5,11 +5,17 @@ import { useRouter } from "next/navigation";
 import { useSession,signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { doneAppointment } from "@/actions/useraction";
 
 const Page = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [doctorData, setDoctorData] = useState({})
+
+  const handleDone = (async(appointmentId) => {
+    await doneAppointment(appointmentId)
+    location.reload();
+  })
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -105,12 +111,17 @@ const Page = () => {
                           🗓 Date: {appointment.date.toLocaleString()}
                         </p>
         </div>
-        <div>
+        <div className=" flex gap-3">
         <Link href={`/call?roomID=${appointment.appointmentId}`}>
                           <button className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 transition">
                             📞 Join
                           </button>
-                        </Link>
+            </Link>
+            <button className="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600 transition"
+              onClick={() => handleDone(appointment.appointmentId)}
+            >
+                            Done
+                          </button>
         </div>
       </div>
       
