@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "NODE_OPTIONS='--inspect' next dev",
     "start": "next start",
     "lint": "next lint"
   },
@@ -12,7 +12,7 @@
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "mongoose": "^8.10.1",
-    "next": "15.1.7",
+    "next": "^15.2.1",
     "next-auth": "^4.24.11",
     "razorpay": "^2.9.5",
     "react": "^19.0.0",
