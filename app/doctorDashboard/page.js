@@ -11,11 +11,25 @@ const Page = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [doctorData, setDoctorData] = useState({})
+  const [medicine, setMedicine] = useState("Medicines: ")
 
-  const handleDone = (async(appointmentId) => {
-    await doneAppointment(appointmentId)
-    location.reload();
-  })
+  const handleDone = async (appointmentId) => {
+    const input = prompt("Add Medicines");
+  
+    // If the user clicks Cancel or inputs an empty string, stop the function
+    if (input === null || input.trim() === "") {
+      return;
+    }
+  
+    setMedicine((prev) => {
+      const updatedMedicine = prev + " " + input;
+      doneAppointment(appointmentId, updatedMedicine); // Use updatedMedicine immediately
+      return updatedMedicine;
+    });
+  
+    await doneAppointment(appointmentId, medicine);
+    location.reload(); // Reload the page after completion
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {

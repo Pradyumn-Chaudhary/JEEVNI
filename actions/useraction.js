@@ -215,7 +215,7 @@ export const fetchForUsername = async (username) => {
   return u;
 };
 
-export const doneAppointment = async (appointmentId) => {
+export const doneAppointment = async (appointmentId, medicine) => {
   await connectDB();
   await User.updateOne(
     { 
@@ -225,7 +225,8 @@ export const doneAppointment = async (appointmentId) => {
     { 
       $set: { 
         "appointments.$.isHistory": true, 
-        "appointments.$.paymentDone": false 
+        "appointments.$.paymentDone": false,
+        "appointments.$.medicine" : medicine
       } 
     }
   ); 
@@ -238,7 +239,8 @@ export const doneAppointment = async (appointmentId) => {
     { 
       $set: { 
         "appointments.$.isHistory": true, 
-        "appointments.$.paymentDone": false 
+        "appointments.$.paymentDone": false,
+        "appointments.$.medicine" : medicine
       } 
     }
   );
