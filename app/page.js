@@ -176,6 +176,7 @@ export default function Home() {
                       <div className="flex flex-col">
                         <h3 className="text-[14px] font-bold">{user.name}</h3>
                         <span className="text-[8px]">{user.category}</span>
+                        {/* <span className="text-[8px]">{user.experience}+ Years </span> */}
                       </div>
                     </div>
                   ))

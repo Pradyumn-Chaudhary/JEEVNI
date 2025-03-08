@@ -66,7 +66,11 @@ const Page = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const updatedForm = { ...form, isDoctor: "doctor", image: session?.user?.image };
+      const updatedForm = {
+        ...form,
+        isDoctor: "doctor",
+        image: session?.user?.image,
+      };
       const result = await updateProfile(updatedForm, session.user.email);
       if (!result.success) {
         alert(result);
@@ -89,254 +93,193 @@ const Page = () => {
   }
 
   return (
-    <div className="bg-gray-100 flex justify-center items-center min-h-screen">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+    <div className="flex flex-col md:flex-row items-center justify-center min-h-screen p-4 scroll-m-0">
+      <div className="md:w-1/2 p-6 bg-white shadow-lg rounded-lg overflow-y-auto max-h-screen">
+        <h1 className="text-2xl font-bold text-blue-600 mb-4">
           Doctor Registration
-        </h2>
-
-        <form className="max-w-2xl mx-auto" onSubmit={handleSubmit}>
+        </h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-700 font-semibold">
-              Full Name
-            </label>
+            <label className="block text-gray-900">Full Name *</label>
             <input
-              value={form.name || ""}
-              onChange={handleChange}
-              id="name"
               type="text"
-              name="name"
+              name="fullName"
+              value={form.fullName}
+              onChange={handleChange}
               required
-              className="w-full mt-1 p-2 border rounded-lg outline-indigo-500"
+              className="w-full p-2 border rounded"
             />
           </div>
-
           <div>
-            <label className="block text-gray-700 font-semibold">
-              Username
-            </label>
+            <label className="block text-gray-900">Username *</label>
             <input
-              value={form.username || ""}
-              onChange={handleChange}
-              id="username"
               type="text"
               name="username"
+              value={form.username}
+              onChange={handleChange}
               required
-              className="w-full mt-1 p-2 border rounded-lg outline-indigo-500"
+              className="w-full p-2 border rounded"
             />
           </div>
-
           <div>
-            <label className="block text-gray-700 font-semibold">Email</label>
+            <label className="block text-gray-900">Email *</label>
             <input
-              value={form.email || ""}
-              onChange={handleChange}
-              id="email"
               type="email"
               name="email"
+              value={form.email}
+              onChange={handleChange}
               required
-              disabled
-              className="w-full mt-1 p-2 border rounded-lg outline-indigo-500"
+              className="w-full p-2 border rounded"
             />
           </div>
-
           <div>
-            <label className="block text-gray-700 font-semibold">Phone</label>
+            <label className="block text-gray-900">Phone *</label>
             <input
-              value={form.phone || ""}
-              onChange={handleChange}
-              id="phone"
               type="tel"
               name="phone"
+              value={form.phone}
+              onChange={handleChange}
               required
-              className="w-full mt-1 p-2 border rounded-lg outline-indigo-500"
+              className="w-full p-2 border rounded"
             />
           </div>
-
           <div>
-            <label className="block text-gray-700 font-semibold">
-              Location
-            </label>
+            <label className="block text-gray-900">Location *</label>
             <input
-              value={form.location || ""}
-              onChange={handleChange}
-              id="location"
               type="text"
               name="location"
-              required
-              className="w-full mt-1 p-2 border rounded-lg outline-indigo-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold">
-              About
-            </label>
-            <input
-              value={form.about || ""}
+              value={form.location}
               onChange={handleChange}
-              id="about"
-              type="text"
-              name="about"
               required
-              className="w-full mt-1 p-2 border rounded-lg outline-indigo-500"
+              className="w-full p-2 border rounded"
             />
           </div>
-
           <div>
-            <label className="block text-gray-700 font-semibold">Gender</label>
-            <div className="flex gap-4 mt-1">
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="gender"
-                  value="male"
-                  checked={form.gender === "male"}
-                  onChange={handleChange}
-                  className="text-indigo-600"
-                />
-                Male
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="gender"
-                  value="female"
-                  checked={form.gender === "female"}
-                  onChange={handleChange}
-                  className="text-indigo-600"
-                />
-                Female
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="gender"
-                  value="other"
-                  checked={form.gender === "other"}
-                  onChange={handleChange}
-                  className="text-indigo-600"
-                />
-                Other
-              </label>
+            <label className="block text-gray-900">Gender *</label>
+            <div className="flex space-x-4">
+              {["Male", "Female", "Other"].map((gender) => (
+                <label key={gender} className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value={gender}
+                    onChange={handleChange}
+                    required
+                    className="form-radio"
+                  />
+                  <span className="ml-2">{gender}</span>
+                </label>
+              ))}
             </div>
           </div>
-
           <div>
-            <label className="block text-gray-700 font-semibold">
-              Qualification
-            </label>
+            <label className="block text-gray-900">Qualification *</label>
             <select
               name="qualification"
-              required
-              className="w-full mt-1 p-2 border rounded-lg outline-indigo-500"
-              value={form.qualification || ""}
+              value={form.qualification}
               onChange={handleChange}
+              required
+              className="w-full p-2 border rounded"
             >
-              <option value="" disabled>
-                Select Qualification
-              </option>
-              <option value="MBBS">MBBS</option>
-              <option value="MD">MD</option>
-              <option value="MS">MS</option>
-              <option value="BDS">BDS</option>
-              <option value="BHMS">BHMS</option>
+              <option value="">Select Qualification</option>
+              {["MBBS", "MD", "PhD"].map((q) => (
+                <option key={q} value={q}>
+                  {q}
+                </option>
+              ))}
             </select>
           </div>
-
           <div>
-            <label className="block text-gray-700 font-semibold">
-              Experience (Years)
-            </label>
+            <label className="block text-gray-900">Experience (Years) *</label>
             <input
-              value={form.experience || ""}
-              onChange={handleChange}
-              id="experience"
               type="number"
               name="experience"
+              value={form.experience}
+              onChange={handleChange}
               min="0"
               required
-              className="w-full mt-1 p-2 border rounded-lg outline-indigo-500"
+              className="w-full p-2 border rounded"
             />
           </div>
-
           <div>
-            <label className="block text-gray-700 font-semibold">
-              Specialization
-            </label>
+            <label className="block text-gray-900">Specialization *</label>
             <select
               name="category"
-              required
-              className="w-full mt-1 p-2 border rounded-lg outline-indigo-500"
-              value={form.category || ""}
+              value={form.category}
               onChange={handleChange}
+              required
+              className="w-full p-2 border rounded"
             >
-              <option value="" disabled>
-                Select Specialization
-              </option>
-              <option value="Cardiology">Cardiology</option>
-              <option value="Neurology">Neurology</option>
-              <option value="Orthopedics">Orthopedics</option>
-              <option value="Pediatrics">Pediatrics</option>
-              <option value="Dermatology">Dermatology</option>
+              <option value="">Select Specialization</option>
+              {["Cardiology", "Neurology", "Orthopedics"].map((spec) => (
+                <option key={spec} value={spec}>
+                  {spec}
+                </option>
+              ))}
             </select>
           </div>
-
           <div>
-            <label className="block text-gray-700 font-semibold">
-              Consultation Fees (₹)
-            </label>
+            <label className="block text-gray-900">Fees</label>
             <input
-              value={form.fees || ""}
-              onChange={handleChange}
-              id="fees"
               type="number"
               name="fees"
+              value={form.fees}
+              onChange={handleChange}
               min="0"
+              step="0.01"
               required
-              className="w-full mt-1 p-2 border rounded-lg outline-indigo-500"
+              className="w-full p-2 border rounded"
             />
           </div>
-
           <div>
-            <label className="block text-gray-700 font-semibold">
-              Razorpay ID
-            </label>
+            <label className="block text-gray-900">About</label>
             <input
-              value={form.razorpayid || ""}
+              type="text"
+              name="about"
+              value={form.about}
               onChange={handleChange}
-              id="razorpayid"
+              required
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-900">Razorpay ID *</label>
+            <input
               type="text"
               name="razorpayid"
-              required
-              className="w-full mt-1 p-2 border rounded-lg outline-indigo-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold">
-              Razorpay Secret
-            </label>
-            <input
-              value={form.razorpaysecret || ""}
+              value={form.razorpayid}
               onChange={handleChange}
-              id="razorpaysecret"
-              type="password"
-              name="razorpaysecret"
               required
-              className="w-full mt-1 p-2 border rounded-lg outline-indigo-500"
+              className="w-full p-2 border rounded"
             />
           </div>
-
-          <div className="text-center">
-            <button
-              type="submit"
-              className="w-full mt-4 px-4 py-2 text-white font-bold bg-indigo-600 rounded-lg hover:bg-indigo-500 transition"
-            >
-              Register
-            </button>
+          <div>
+            <label className="block text-gray-900">Razorpay Secret *</label>
+            <input
+              type="text"
+              name="razorpaysecret"
+              value={form.razorpaysecret}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border rounded"
+            />
           </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+          >
+            Register
+          </button>
         </form>
+      </div>
+      <div className="md:w-1/2 h-screen overflow-hidden bg-yellow-500">
+        <div className="h-full overflow-hidden">
+          <img
+            src="https://cdn.dribbble.com/users/514480/screenshots/2091133/media/707a1f1c7d082f47858b783edaf64129.gif"
+            alt="Patient Registration"
+            className="w-full h-full object-cover"
+          />
+        </div>
       </div>
     </div>
   );
