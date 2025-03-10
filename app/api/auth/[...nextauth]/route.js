@@ -24,7 +24,7 @@ export const authOptions = {
 
         const updatedUser = await User.findOneAndUpdate(
           { email: user.email },
-          { email: user.email, name: user.name},
+          { email: user.email, name: user.name },
           { upsert: true, new: true } // Create if not found, return new doc
         );
 
