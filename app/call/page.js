@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Suspense } from "react"; // Add Suspense import
 import io from "socket.io-client";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -8,6 +8,14 @@ import Link from "next/link";
 const socket = io("https://webrtc-signaling-server-kgu8.onrender.com");
 
 export default function Call() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CallComponent />
+    </Suspense>
+  );
+}
+
+function CallComponent() {
   const searchParams = useSearchParams();
   const roomID = searchParams.get("roomID"); // Get roomID from URL query params
   const [roomId, setRoomId] = useState(roomID); // Store roomID in state
@@ -29,7 +37,7 @@ export default function Call() {
   // **Create WebRTC Peer Connection**
   const createPeerConnection = () => {
     const pc = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }], 
     });
 
     pc.onicecandidate = (event) => {
