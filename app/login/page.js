@@ -101,13 +101,13 @@ const Page = () => {
             <Image src="/google.svg" width={24} height={24} alt="Google" />
             Continue with Google
           </button>
-          <button
+          {/* <button
             className="border border-gray-300 font-bold p-3 rounded-full w-full hover:bg-[#f6f7f5] flex justify-center gap-2"
             onClick={() => signIn("apple")}
           >
             <Image src="/apple.svg" width={24} height={24} alt="Apple" />
             Continue with Apple
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
