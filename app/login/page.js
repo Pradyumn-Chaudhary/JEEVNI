@@ -37,7 +37,6 @@ const Page = () => {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-
         {/* <form className="space-y-6" action="#" method="POST" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-900">
@@ -104,7 +103,7 @@ const Page = () => {
           </button>
           <button
             className="border border-gray-300 font-bold p-3 rounded-full w-full hover:bg-[#f6f7f5] flex justify-center gap-2"
-            onClick={() => signIn("github")}
+            onClick={() => signIn("apple")}
           >
             <Image src="/apple.svg" width={24} height={24} alt="Apple" />
             Continue with Apple
