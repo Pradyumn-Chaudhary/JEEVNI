@@ -195,7 +195,7 @@ export const addAppointment = async (
       doctorName: doctorName,
       doctorEmail: doctorEmail,
       fees: fees,
-      paymentDone: false,
+      paymentDone: paymentStatus,
     });
 
     await patient.save();
