@@ -26,8 +26,8 @@ const UserSchema = new Schema(
     experience: { type: Number },
     fees: { type: Number },
     appointments: { type: [AppointmentSchema], default: [] }, // Array of appointment objects
-    razorpayid: { type: String },
-    razorpaysecret: { type: String },
+    razorpayid: { type: String, default: "rzp_test_5C98ux8T55pJEK" },
+    razorpaysecret: { type: String, default: "RfiH49n25ARHe1gnYKacLcz4" },
     category: { type: String },
     rating: { type: Number, default: 0 },
     isDoctor: { type: String, default: "none" },

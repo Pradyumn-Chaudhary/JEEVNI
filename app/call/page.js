@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 // Initialize Socket.IO client (update the URL to your server if different)
-const socket = io("http://localhost:3000");
+const socket = io("http://localhost:3001");
 
 export default function Call() {
   const searchParams = useSearchParams();
@@ -41,9 +41,9 @@ export default function Call() {
     pc.ontrack = (event) => {
       if (remoteVideoRef.current && !remoteVideoRef.current.srcObject) {
         remoteVideoRef.current.srcObject = event.streams[0];
-        remoteVideoRef.current.play().catch((e) =>
-          console.error("Remote video play error:", e)
-        );
+        remoteVideoRef.current
+          .play()
+          .catch((e) => console.error("Remote video play error:", e));
       }
     };
 
@@ -87,9 +87,9 @@ export default function Call() {
   useEffect(() => {
     if (isInCall && localStreamRef.current && localVideoRef.current) {
       localVideoRef.current.srcObject = localStreamRef.current;
-      localVideoRef.current.play().catch((e) =>
-        console.error("Local video play error:", e)
-      );
+      localVideoRef.current
+        .play()
+        .catch((e) => console.error("Local video play error:", e));
     }
   }, [isInCall]);
 

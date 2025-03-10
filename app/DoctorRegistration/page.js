@@ -18,8 +18,8 @@ const Page = () => {
     experience: "",
     category: "",
     fees: "",
-    razorpayid: "",
-    razorpaysecret: "",
+    razorpayid: "rzp_test_5C98ux8T55pJEK",
+    razorpaysecret: "RfiH49n25ARHe1gnYKacLcz4",
     isDoctor: "",
     about: "",
     image: "",
@@ -49,6 +49,8 @@ const Page = () => {
         ...userData,
         isDoctor: userData.isDoctor || "none", // ✅ Ensure "doctor" is always set
         image: userData.image || "",
+        razorpayid: "rzp_test_5C98ux8T55pJEK",
+        razorpaysecret: "RfiH49n25ARHe1gnYKacLcz4",
       }));
     } catch (error) {
       console.error("Error fetching user data:", error);

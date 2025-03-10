@@ -63,7 +63,7 @@ const DoctorProfilePage = () => {
       alert(a.error);
       // toast.error(a.error);
     }
-    let orderId = a.order.id;
+    let orderId = a?.order?.id;
     console.log("Aa", a);
 
     console.log("Razorpay Key ID:", a.id);
@@ -105,7 +105,7 @@ const DoctorProfilePage = () => {
         paymentform.patientEmail,
         paymentform.patientName,
         paymentform.problem,
-        paymentform.fees
+        -paymentform.fees * 10,
       );
       console.log("892y89d389y29");
       // If successful, redirect to patientDashboard with the query parameter
@@ -114,10 +114,11 @@ const DoctorProfilePage = () => {
       // Handle any errors that occur during the appointment creation
       console.error("Error adding appointment:", error);
       // Optionally, show a user-friendly error message here
-      alert("There was an error while adding the appointment. Please try again.");
+      alert(
+        "There was an error while adding the appointment. Please try again."
+      );
     }
   };
-  
 
   useEffect(() => {
     const checkDoctor = async () => {
