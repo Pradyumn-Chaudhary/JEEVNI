@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 // Initialize Socket.IO client (update the URL to your server if different)
-const socket = io("http://localhost:3001");
+const socket = io("https://webrtc-signaling-server-kgu8.onrender.com");
 
 export default function Call() {
   const searchParams = useSearchParams();
