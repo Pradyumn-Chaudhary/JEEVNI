@@ -49,9 +49,11 @@ export const POST = async (req) => {
         { $set: { "appointments.$.paymentDone": "true" } }
       );
 
-      return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/patientDashboard?paymentDone=true`
-      );
+     // Explicitly redirect with a 303 status code to ensure GET
+     return NextResponse.redirect(
+      `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/patientDashboard?paymentDone=true`,
+      { status: 303 } // Use 303 to force a GET request
+    );
     } else {
       return NextResponse.json({
         success: false,
